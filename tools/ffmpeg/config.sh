@@ -1,0 +1,26 @@
+./configure \
+        --prefix=ffmpeg_binaries \
+        --arch=x86_64 \
+        --disable-all \
+        --enable-ffmpeg \
+        --enable-avformat \
+        --enable-avcodec \
+        --enable-avfilter \
+        --enable-swresample \
+        --enable-swscale \
+        --enable-protocol=file\
+        --enable-protocol=pipe \
+        --enable-gpl \
+        --enable-encoder="pcm_s16le" \
+        --enable-encoder="libmp3lame" \
+        --enable-demuxer="mp3" \
+        --enable-demuxer="wav" \
+        --enable-demuxer="pcm_s16le" \
+        --enable-decoder="mp3" \
+        --enable-decoder="pcm_s16le" \
+        --enable-muxer="wav" \
+        --enable-muxer="mp3" \
+        --enable-muxer="pcm_s16le" \
+        --enable-filter="aresample" \
+        --enable-libmp3lame \
+        --enable-parser=mpegaudio \

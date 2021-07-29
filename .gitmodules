@@ -1,0 +1,6 @@
+[submodule "Beat_Detection_Plugin/dependencies/marsyas"]
+	path = dependencies/marsyas
+	url = git@github.com:accusonus/marsyas.git
+[submodule "Beat_Detection_Plugin/dependencies/AudioFile"]
+	path = dependencies/AudioFile
+	url = git@github.com:adamstark/AudioFile.git

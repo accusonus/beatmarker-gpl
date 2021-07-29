@@ -1,0 +1,153 @@
+<!-- 
+	BeatMarker,
+	an Adobe Extension that marks important audio events in the timeline
+	Copyright (C) 2021  Accusonus, Inc.
+	17 Carley Road, Lexington, MA 02421, USA
+
+	This program is free software; you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation; either version 2 of the License, or
+	(at your option) any later version.
+
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License along
+	with this program; if not, write to the Free Software Foundation, Inc.,
+	51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+-->
+
+
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>BeatMarker</title>
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+		<!-- Google Analytics -->
+		<script src="js/gaua.js"></script>
+		<script>
+			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+			ga('create', BeatMarkerGAUA, {'cookieDomain': 'none'});
+			ga('set', 'checkProtocolTask', null);
+			ga('set', 'checkStorageTask', null);
+			ga('require', 'displayfeatures');
+			ga('send', 'pageview', './index.html');
+		</script>
+		<script async src='https://www.google-analytics.com/analytics.js'></script>
+		<!-- End Google Analytics -->
+		<script src="js/version.js"></script>
+		<script src="js/index.js"></script>
+		<script src="./lib/CSInterface.js"></script>
+		<script src="./lib/wavesurfer.min.js"></script>
+		<script src="./lib/wavesurfer.markers.min.js"></script>
+		<script src="./lib/wavesurfer.regions.min.js"></script>
+	</head>
+	<body onload="onLoad()">
+    <div id="master-panel" ondrop="systemImportHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeave(event);">
+		<img id="logo" src="img/accusonus.svg" onclick="openAboutBox()" draggable="false">
+		<div id="extension-panel">
+			<div id="import-panel">
+				<div class="container" id="cellar-container">
+					<div class="box-container">
+						<img src="img/CellarBanner.png" id="cellar-banner" draggable="false">
+						<button class="button cellar-panel-btn" onclick="window.cep.util.openURLInDefaultBrowser('https://music-cellar.accusonus.com')">
+							Get Free Music
+						</button>
+					</div>
+				</div>
+				<div class="container" id="files-container">
+					<div id="file-dropdown" class="dropdown" onclick="fileDropdownClickHandler()">
+						<div class="dropdown-current"><span>Select from project files</span>
+							<div class="dropdown-arrow"></div>
+						</div>
+						<div class="dropdown-options">
+						</div>
+					</div>
+					<div class="dropzone" id="dropzone">
+						<svg id="waveform" xmlns="http://www.w3.org/2000/svg" width="30" height="19" viewBox="0 0 30 19" fill="#4B4B4B">
+							<path id="small" d="M1 0C1.5523 0 2 0.373096 2 0.833321V4.16669C2 4.62693 1.5523 5 1 5C0.447696 5 0 4.62693 0 4.16669V0.833321C0 0.373096 0.447696 0 1 0Z" transform="translate(0,7)"/>
+							<path id="medium" d="M1 0C1.5523 0 2 0.388808 2 0.868414V10.1316C2 10.6112 1.5523 11 1 11C0.447696 11 0 10.6112 0 10.1316V0.868414C0 0.388808 0.447696 0 1 0Z" transform="translate(4,4)"/>
+							<path id="large" d="M0.999915 0C1.55217 0 2 0.411612 2 0.919347V18.0807C2 18.5884 1.55217 19 0.999915 19C0.447658 19 0 18.5884 0 18.0807V0.919347C0 0.411612 0.447658 0 0.999915 0Z" transform="translate(8,0)"/>
+							<use href="#medium" transform="translate(8,0)"/>
+							<use href="#small" transform="translate(16,0)"/>
+							<use href="#medium" transform="translate(16,0)"/>
+							<use href="#small" transform="translate(24,0)"/>
+							<use href="#medium" transform="translate(24,0)"/>
+						</svg>
+						<p>Drag Audio File Here</p>
+						<div id="import-container">
+							<label class="button" id="file-input-btn">
+								<input type="file" id="file-input" style="display: none;" onchange="systemImportHandler(event)" accept="audio/wav, audio/mp3">
+								Import Audio
+							</label>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="functionality-panel">
+				<div class="waveform-holder">
+					<div id="wavesurfer" onwheel="zoomWaveform(event)"></div>
+					<div id="wavesurfer-overlay">
+						<span>No audio loaded</span>
+						<button class="play-button" onclick="playbackHandler()" disabled></button>
+					</div>
+				</div>
+				<div id="marker-container">
+					<p>Select number of edits: </p>
+					<input placeholder="4" value="1" min="1" type="number" id="marker-number" onchange="updateSelectedMarkers()" disabled readonly>
+					<span id="maxMarkers"></span>
+				</div>
+				<div id="marker-button-container">
+					<button class="button" onclick="undoMarkers()" id="undo-markers" disabled>Undo</button>
+					<button class="button" onclick="createMarkers()" id="create-markers" disabled>Create Markers</button>
+				</div>
+			</div>
+		</div>
+		<div id="drag-overlay"></div>
+	</div>
+	<div class="bottom_bar">
+		<button id="licenser-btn" onclick="licenser()"></button>
+	</div>
+	<div id="alert-modal" class="modal">
+		<div class="modal-content">
+			<h1 id="alert-title"></h1>
+			<hr>
+			<p id="alert-body"></p>
+			<button class="button" onclick="closeAlertBox()">OK</button>
+		</div>
+	</div>
+	<div id="about-modal" class="modal">
+		<div class="modal-content">
+			<h1>BeatMarker</h1>
+			<p>Version 0.1 (Commit hash: <span id="commit-hash"></span>)</p>
+			<p>
+				Copyright © Accusonus Inc. <br>
+				All rights reserved.
+			</p>
+			<p>
+				<a onclick="openLicensesFile()" href="#">Licensed under GPL v2.0</a>
+			</p>
+			<hr>
+			<p>
+				By agreeing to send anonymous usage data, you are helping us improve our products!
+				You can read our Privacy Policy
+				<a onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/content/privacy-policy')" href="#">here.</a>
+			</p>
+			<div id="analytics-optin">
+				<input id="optin" type="checkbox">
+				<label for="optin">I agree</label>
+			</div>
+			<button class="button" onclick="closeAboutBox()">OK</button>
+		</div>
+	</div>
+	<div id="loading-modal" class="modal">
+		<div class="modal-content">
+			<p id="loading-text"></p>
+		</div>
+	</div>
+	</body>	
+</html>
