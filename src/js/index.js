@@ -210,11 +210,15 @@ function ffmpegToWAV(filepath){
     const convertionCommand = window.ffmpegLocation + " -v quiet -y -i \""  + filepath + "\" -c:a pcm_s16le \"" + window.outputDir + fileNameOnly + ".wav\""
 
     // Call the sync version
-    execSync(convertionCommand, {encoding: "UTF-8"}, function (err){})
+    execSync(convertionCommand, {encoding: "UTF-8"}, function (err){
+        if (err) 
+        {
+            raiseAlert("Error!", "Problem while processing input file!");
+        }
+    })
 }
 
-function dragOverHandler(ev)
-{
+function dragOverHandler(ev){
     ev.preventDefault();
     // On dragOver change the class (changes color)
     document.querySelector("#master-panel").classList.add('dragover');
