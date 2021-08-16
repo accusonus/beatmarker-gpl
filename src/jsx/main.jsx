@@ -59,8 +59,7 @@ $._BDP_={
     {
         var mediaPath = projectItem.getMediaPath();
         // Guard for all invalid cases
-        if (!found || !projectItem.type == 1 ||
-            !((mediaPath.split('.').pop().toUpperCase() == "WAV") || (mediaPath.split('.').pop().toUpperCase() == "MP3"))){
+        if (!found || !projectItem.type == 1){
 
             this.setSelectedAudioFile("invalid","invalid","invalid")
             return;

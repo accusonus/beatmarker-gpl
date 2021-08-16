@@ -446,8 +446,8 @@ function systemImportHandler(ev)
        if (!ev.dataTransfer.files.length){
             // File object that mimics the desired fields from dataTransfer object
             var file = {
-                name : "invalid",
-                path : "invalid",
+                name :     "invalid",
+                path :     "invalid",
                 treePath : "invalid"
             }
 
@@ -472,7 +472,7 @@ function systemImportHandler(ev)
 
                 }
                 else{
-                    raiseAlert("Invalid file type","Please import a supported audio file (.wav/.mp3)");
+                    raiseAlert("Invalid file","Please import an audio file!");
                 }
             });
             return
@@ -503,7 +503,7 @@ function importFile(file, type)
 
     if(!storeOutputIfExists(file)){      
         raiseAlert("Error!", "Error while processing Input file!");
-        return
+        return;
     }  
 
     if(type == "Project"){
