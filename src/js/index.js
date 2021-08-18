@@ -72,7 +72,8 @@ window.audioFile = {
 
     "fileName" : null,
     "filePath" : null,
-    "treePath" : null
+    "treePath" : null,
+    "originalName" : null
 
 }; // This object is global and accessible from every function.
 
@@ -214,17 +215,19 @@ function ffmpegToWAV(file){
     // FFmpeg to convert all files to .wav / stereo -> mono
     const convertionCommand = window.ffmpegLocation + " -v fatal -y -i \""  + filepath + "\" -ac 1 -c:a pcm_s16le \"" + newFilePath + "\"";
 
-    // Call the sync version
+    // Call the sync version of exec
     try {
         execSync(convertionCommand, {encoding: "UTF-8"});
     } catch (e) {
         return null;
     }
     
+    // Store the new file parameters
     var newFile = {
         name : newFileName,
         path : newFilePath,
-        treePath : file.treePath
+        treePath : file.treePath,
+        oldName : file.name
     }
 
     return newFile;
@@ -509,7 +512,6 @@ function importFile(file, type)
 {
     var newFile = ffmpegToWAV(file);
 
-
     if(!newFile || !storeOutputIfExists(newFile)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
@@ -524,7 +526,7 @@ function importFile(file, type)
     else {
         // Show the imported file on the dragzone
         document.querySelector(".dropzone").classList = "dropzone full";
-        document.querySelector(".dropzone p").innerHTML = window.audioFile.fileName;
+        document.querySelector(".dropzone p").innerHTML = window.audioFile.originalName;
 
         var selected = document.querySelector("#file-dropdown .selected");
 
@@ -581,6 +583,7 @@ function storeOutputIfExists(file) {
     window.audioFile.fileName = file.name;
     window.audioFile.filePath = file.path;
     window.audioFile.treePath = file.treePath;
+    window.audioFile.originalName = file.oldName;
 
     // On successful import
     return true;
@@ -594,11 +597,6 @@ function storeOutputIfExists(file) {
  * 'createMarkers()'.
  */ 
 async function detectBeats() {
-    if (window.audioFile.filePath == null) {
-        raiseAlert("Wrong Filetype","Please, drop an audio file (.wav or .mp3)" )
-        return;
-    }
-
     var filename = audioFile.fileName;
     filename = filename.split(".");
     filename.pop();
