@@ -221,17 +221,16 @@ function ffmpegToWAV(file){
             raiseAlert("Error!", "Problem while processing input file!");
             return null;
         }
-
-        var newFile = {
-            "name" : newFileName, 
-            "path" : newFilePath,
-            "treePath" : file.treePath
-        }
-
-        return newFile;
-        
     })
 
+    
+    var newFile = {
+        name : newFileName,
+        path : newFilePath,
+        treePath : file.treePath
+    }
+
+    return newFile;
 }
 
 function dragOverHandler(ev){
@@ -877,16 +876,11 @@ function loadWaveform(file){
     document.querySelector(".play-button").disabled = true;
     document.querySelector(".play-button").classList.remove("playing");
     // If audiofile is imported from project we need to read it and create a blob
-    if(!window.importedThroughSystem){
-        var buff = fs.readFileSync(window.audioFile.filePath);
-        let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
-        var blob = new Blob([arrayBuff]);
-        wavesurfer.loadBlob(blob);
-    }
-    else{
-        wavesurfer.loadBlob(file);
-
-    }
+    var buff = fs.readFileSync(window.audioFile.filePath);
+    let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
+    var blob = new Blob([arrayBuff]);
+    wavesurfer.loadBlob(blob);
+    
     // When waveform is ready, reset zoom level
     wavesurfer.on('ready',()=>{
         // Min zoom (pixels per second) is waveform width divided by audio duration
