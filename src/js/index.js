@@ -629,10 +629,9 @@ async function detectBeats() {
 
         // Close loading modal
         closeLoadingModal();
-        
-        if (audioFile.fileName.endsWith(".mp3")){
-            fs.unlink(window.outputDir + filename + ".wav", ()=>{})
-        }
+       
+        // Remove the temp file
+        fs.unlink(window.audioFile.filePath);
         return;
     });
 }
