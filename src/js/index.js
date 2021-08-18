@@ -631,7 +631,7 @@ async function detectBeats() {
         closeLoadingModal();
        
         // Remove the temp file
-        fs.unlink(window.audioFile.filePath);
+        fs.unlink(window.audioFile.filePath, () => {});
         return;
     });
 }
