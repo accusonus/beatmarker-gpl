@@ -52,6 +52,7 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync
 const os = require('os');
+const mimeLookup = require('mime-types').lookup;
 
 /** 
  * Variable that checks wether the last imported file was through
@@ -233,6 +234,25 @@ function ffmpegToWAV(file){
     return newFile;
 }
 
+/*
+ * Method that generates a BLOB from given filepath
+ */
+
+function blobFromPath(path){
+    if (!fs.existsSync(path)){
+        return null;
+    }
+    // Read the file data into a buffer
+    var buff = fs.readFileSync(path);
+
+    // Slice the buffer into an array
+    let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
+
+    // Construct the BLOB
+    var blob = new Blob([arrayBuff]);
+    return blob
+}
+
 function dragOverHandler(ev){
     ev.preventDefault();
     // On dragOver change the class (changes color)
@@ -379,6 +399,14 @@ function populateDropdown(data, preselected) {
     }
 
     for (var i = 0; i<items.length; i+=2){
+        
+        if (!items[i+1]){
+            continue;
+        }
+     
+        if (!mimeLookup(items[i+1]).startsWith("audio")){
+            continue;
+        } 
 
         // Create the new menu option element
         let option = document.createElement("span");
@@ -549,7 +577,7 @@ function importFile(file, type)
     var waveFormHolder = document.querySelector(".waveform-holder");
     waveFormHolder.style.pointerEvents  = "initial";
 
-    loadWaveform(newFile);
+    loadWaveform();
 
     // Google Analytics
     optionallySendGA(sendGAImportEvent, file, type);
@@ -866,14 +894,13 @@ function clickAtTime(time) {
     clickVolume.gain.linearRampToValueAtTime(0, time + .001 + .008);
   }
 
-function loadWaveform(file){
+function loadWaveform(){
     // Disable play button
     document.querySelector(".play-button").disabled = true;
     document.querySelector(".play-button").classList.remove("playing");
-    // If audiofile is imported from project we need to read it and create a blob
-    var buff = fs.readFileSync(window.audioFile.filePath);
-    let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
-    var blob = new Blob([arrayBuff]);
+    
+    // Load the file from path into BLOB
+    var blob = blobFromPath(window.audioFile.filePath);
     wavesurfer.loadBlob(blob);
     
     // When waveform is ready, reset zoom level

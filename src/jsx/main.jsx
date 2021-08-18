@@ -23,7 +23,7 @@ $._BDP_={
     
     audioFilePath : "",
     
-    audioFiles : [],
+    projectFiles : [],
     
     undoArray : [],
 
@@ -354,9 +354,9 @@ $._BDP_={
 
     getDropdownFiles : function() {
         // Initiate the DFS by setting rootItem as starting node
-        this.audioFiles.length = 0;
-        this.getAudioFiles(app.project.rootItem);
-        return this.audioFiles;
+        this.projectFiles.length = 0;
+        this.getProjectFiles(app.project.rootItem);
+        return this.projectFiles;
     },
     
     searchForFile : function(node, filepath){
@@ -381,30 +381,34 @@ $._BDP_={
         } 
     },
 
+    /**
+     * TODO: Change this method to return all project files and handle it
+     */
     // Runs a search through the project tree and searches for audio files
-    getAudioFiles : function(node) {
+    getProjectFiles : function(node) {
         //Check if node is a bin or root
         if (node.type == 2 || node.type== 3) {
             var numItems = node.children.numItems;
             for (var index = 0; index < numItems; index++){
                 var myItem = node.children[index];
                 // Recursively call the function
-                this.getAudioFiles(myItem);
+                this.getProjectFiles(myItem);
             }
             return;
         } else {
-            /** If the current node is a leaf, check for filetype
-                and add it to the list
-            */
-            var fileExtension = node.getMediaPath().split('.').pop();
-            if (fileExtension.toUpperCase() == "WAV" || fileExtension.toUpperCase() == "MP3" ){
-                /** Extract the name of the file and the directory it's contained in,
-                *   excluding the root directory (project name + \)
-                */
-                nameWithPath = node.treePath.split(app.project.name + '\\').pop();
-                var nodeInfo = [nameWithPath, node.getMediaPath()]; 
-                this.audioFiles.push(nodeInfo);
-            }
+            /** 
+             *  If the current node is a leaf, check for filetype
+             *  and add it to the list
+             *  Extract the name of the file and the directory it's contained in,
+             *  excluding the root directory (project name + \)
+             */
+
+            nameWithPath = node.treePath.split(app.project.name + '\\').pop();
+
+            var nodeInfo = [nameWithPath, node.getMediaPath()]; 
+            
+            this.projectFiles.push(nodeInfo);
+
             return;
         }       
     }
