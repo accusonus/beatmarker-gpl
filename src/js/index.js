@@ -212,17 +212,14 @@ function ffmpegToWAV(file){
     var newFilePath = window.outputDir + newFileName;
 
     // FFmpeg to convert all files to .wav / stereo -> mono
-    const convertionCommand = window.ffmpegLocation + " -v quiet -y -i \""  + filepath + "\" -ac 1 -c:a pcm_s16le \"" + newFilePath + "\"";
+    const convertionCommand = window.ffmpegLocation + " -v fatal -y -i \""  + filepath + "\" -ac 1 -c:a pcm_s16le \"" + newFilePath + "\"";
 
     // Call the sync version
-    execSync(convertionCommand, {encoding: "UTF-8"}, function (err){
-        if (err) 
-        {
-            raiseAlert("Error!", "Problem while processing input file!");
-            return null;
-        }
-    })
-
+    try {
+        execSync(convertionCommand, {encoding: "UTF-8"});
+    } catch (e) {
+        return null;
+    }
     
     var newFile = {
         name : newFileName,
@@ -512,7 +509,8 @@ function importFile(file, type)
 {
     var newFile = ffmpegToWAV(file);
 
-    if(!storeOutputIfExists(newFile)){      
+
+    if(!newFile || !storeOutputIfExists(newFile)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
     }  
