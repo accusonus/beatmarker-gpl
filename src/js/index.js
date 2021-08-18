@@ -195,12 +195,11 @@ function readBeatsTxt(filename){
 /**
  * Method that converts mp3 to wav
  */
-function ffmpegToWAV(filepath){
+function ffmpegToWAV(file){
    
+    var filepath = file.path;
 
-    var filepath = window.audioFile.filePath;
-
-    var filename = window.audioFile.fileName;
+    var filename = file.name;
 
     var fileSplit = filename.split('.');
 
@@ -208,18 +207,31 @@ function ffmpegToWAV(filepath){
 
     var fileNameOnly = fileSplit.join(".");
 
+    var newFileName = fileNameOnly + ".wav";
+
+    var newFilePath = window.outputDir + newFileName;
+
     // FFmpeg to convert all files to .wav / stereo -> mono
-    const convertionCommand = window.ffmpegLocation + " -v quiet -y -i \""  + filepath + "\"-ac 1 -c:a pcm_s16le \"" + window.outputDir + fileNameOnly + ".wav\""
+    const convertionCommand = window.ffmpegLocation + " -v quiet -y -i \""  + filepath + "\" -ac 1 -c:a pcm_s16le \"" + newFilePath + "\"";
 
     // Call the sync version
     execSync(convertionCommand, {encoding: "UTF-8"}, function (err){
         if (err) 
         {
             raiseAlert("Error!", "Problem while processing input file!");
-            return;
+            return null;
         }
+
+        var newFile = {
+            "name" : newFileName, 
+            "path" : newFilePath,
+            "treePath" : file.treePath
+        }
+
+        return newFile;
         
     })
+
 }
 
 function dragOverHandler(ev){
@@ -499,9 +511,9 @@ function systemImportHandler(ev)
 
 function importFile(file, type)
 {
-    ffmpegToWAV(file.path);
+    var newFile = ffmpegToWAV(file);
 
-    if(!storeOutputIfExists(file)){      
+    if(!storeOutputIfExists(newFile)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
     }  
@@ -538,17 +550,13 @@ function importFile(file, type)
     var waveFormHolder = document.querySelector(".waveform-holder");
     waveFormHolder.style.pointerEvents  = "initial";
 
-    loadWaveform(file);
+    loadWaveform(newFile);
 
     // Google Analytics
     optionallySendGA(sendGAImportEvent, file, type);
 
     // Run beat detection
     detectBeats(); 
-}
-
-function checkForFile() {
-
 }
 
 /**
@@ -594,7 +602,6 @@ async function detectBeats() {
         return;
     }
 
-    ffmpegToWAV();
     var filename = audioFile.fileName;
     filename = filename.split(".");
     filename.pop();
