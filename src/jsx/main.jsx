@@ -381,9 +381,6 @@ $._BDP_={
         } 
     },
 
-    /**
-     * TODO: Change this method to return all project files and handle it
-     */
     // Runs a search through the project tree and searches for audio files
     getProjectFiles : function(node) {
         //Check if node is a bin or root
