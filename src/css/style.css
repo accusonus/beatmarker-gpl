@@ -47,6 +47,7 @@ body {
   font-family: 'AdobeClean-Regular';
   user-select: none;
   margin-left: 0;
+  overflow: hidden;
 }
 
 a{
@@ -467,6 +468,7 @@ input[type=number]::-webkit-outer-spin-button {
   height: 20px;
   bottom:0;
   position: fixed;
+  z-index: 10;
 }
 
 #licenser-btn{

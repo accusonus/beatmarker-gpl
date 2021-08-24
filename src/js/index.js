@@ -875,8 +875,8 @@ function loadWaveform(file){
     wavesurfer.on('ready',()=>{
         // Min zoom (pixels per second) is waveform width divided by audio duration
         minPixPerSec = document.querySelector("wave").offsetWidth/wavesurfer.getDuration();
-        waveformZoom = minPixPerSec;
-        wavesurfer.zoom(waveformZoom);
+        waveformZoom = 0;
+        wavesurfer.zoom(minPixPerSec);
         // For min zoom set overflow to visible so that handles show correctly
         document.querySelector("wave").style.overflow = "visible";
         // Add active region from track start to track end
@@ -922,27 +922,27 @@ function playbackHandler(){
 }
 
 function zoomWaveform(e){
-    if(Math.abs(e.deltaY) > 100 || e.ctrlKey){
-        e.preventDefault();
-        // Detect pinch gesture based on e.ctrlKey modifier
-        zoomRate = e.ctrlKey ? 1.1 : 2;
-        let newWaveformZoom = Math.min(Math.max(waveformZoom * (zoomRate**Math.sign(-e.deltaY)), minPixPerSec),100);
-        // For min zoom set overflow to visible so that handles show correctly
-        if(waveformZoom == minPixPerSec){
-            document.querySelector("wave").style.overflow = "visible"
-        }
-        if(waveformZoom === newWaveformZoom){
-            return;
-        }
-        document.querySelector("wave").style.overflow = "auto hidden"
-        waveformZoom = newWaveformZoom;
-        var wave = document.querySelector("wave");
-        var pointerPos = e.clientX - wave.getBoundingClientRect().x;
-        var offset = (wave.scrollLeft + pointerPos)/wave.scrollWidth;
-        wavesurfer.zoom(waveformZoom);
-        var position = wave.scrollWidth*offset - pointerPos;
-        wave.scrollTo(position,0);
+    e.preventDefault();
+    let direction = Math.sign(-e.deltaY);
+    let force = Math.log((Math.abs(e.deltaY)/12)+1)/10;
+    let newWaveformZoom = Math.max(Math.min(waveformZoom + direction*force,1),0);
+    console.log('force ',force)
+    console.log('new ',newWaveformZoom)
+    // For min zoom set overflow to visible so that handles show correctly
+    if(waveformZoom == 0){
+        document.querySelector("wave").style.overflow = "visible"
     }
+    if(waveformZoom === newWaveformZoom){
+        return;
+    }
+    document.querySelector("wave").style.overflow = "auto hidden"
+    waveformZoom = newWaveformZoom;
+    var wave = document.querySelector("wave");
+    var pointerPos = e.clientX - wave.getBoundingClientRect().x;
+    var offset = (wave.scrollLeft + pointerPos)/wave.scrollWidth;
+    wavesurfer.zoom((100-minPixPerSec)*(waveformZoom**2)+minPixPerSec);
+    var position = wave.scrollWidth*offset - pointerPos;
+    wave.scrollTo(position,0);
 }
 
 function scheduleClicks(markers, startTime){
