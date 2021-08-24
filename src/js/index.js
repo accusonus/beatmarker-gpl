@@ -52,6 +52,7 @@ const fs = require('fs');
 const exec = require('child_process').exec;
 const execSync = require('child_process').execSync
 const os = require('os');
+const mimeLookup = require('mime-types').lookup;
 
 /** 
  * Variable that checks wether the last imported file was through
@@ -72,7 +73,8 @@ window.audioFile = {
 
     "fileName" : null,
     "filePath" : null,
-    "treePath" : null
+    "treePath" : null,
+    "originalName" : null
 
 }; // This object is global and accessible from every function.
 
@@ -195,11 +197,11 @@ function readBeatsTxt(filename){
 /**
  * Method that converts mp3 to wav
  */
-function ffmpegToWAV(filepath){
+function ffmpegToWAV(file){
+   
+    var filepath = file.path;
 
-    var filepath = window.audioFile.filePath;
-
-    var filename = window.audioFile.fileName;
+    var filename = file.name;
 
     var fileSplit = filename.split('.');
 
@@ -207,14 +209,51 @@ function ffmpegToWAV(filepath){
 
     var fileNameOnly = fileSplit.join(".");
 
-    const convertionCommand = window.ffmpegLocation + " -v quiet -y -i \""  + filepath + "\" -c:a pcm_s16le \"" + window.outputDir + fileNameOnly + ".wav\""
+    var newFileName = fileNameOnly + ".wav";
 
-    // Call the sync version
-    execSync(convertionCommand, {encoding: "UTF-8"}, function (err){})
+    var newFilePath = window.outputDir + newFileName;
+
+    // FFmpeg to convert all files to .wav / stereo -> mono
+    const convertionCommand = window.ffmpegLocation + " -v fatal -y -i \""  + filepath + "\" -ac 1 -c:a pcm_s16le \"" + newFilePath + "\"";
+
+    // Call the sync version of exec
+    try {
+        execSync(convertionCommand, {encoding: "UTF-8"});
+    } catch (e) {
+        return null;
+    }
+    
+    // Store the new file parameters
+    var newFile = {
+        name : newFileName,
+        path : newFilePath,
+        treePath : file.treePath,
+        oldName : file.name
+    }
+
+    return newFile;
 }
 
-function dragOverHandler(ev)
-{
+/*
+ * Method that generates a BLOB from given filepath
+ */
+
+function blobFromPath(path){
+    if (!fs.existsSync(path)){
+        return null;
+    }
+    // Read the file data into a buffer
+    var buff = fs.readFileSync(path);
+
+    // Slice the buffer into an array
+    let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
+
+    // Construct the BLOB
+    var blob = new Blob([arrayBuff]);
+    return blob
+}
+
+function dragOverHandler(ev){
     ev.preventDefault();
     // On dragOver change the class (changes color)
     document.querySelector("#master-panel").classList.add('dragover');
@@ -305,7 +344,7 @@ function sendGAImportEvent(files, label)
  * Method that gets called when the user 
  * clicks the project imports dropdown
  */
- function fileDropdownClickHandler(){
+function fileDropdownClickHandler(){
 
     const fileDropdown = document.getElementById('file-dropdown');
 
@@ -360,6 +399,14 @@ function populateDropdown(data, preselected) {
     }
 
     for (var i = 0; i<items.length; i+=2){
+        
+        if (!items[i+1]){
+            continue;
+        }
+     
+        if (!mimeLookup(items[i+1]).startsWith("audio")){
+            continue;
+        } 
 
         // Create the new menu option element
         let option = document.createElement("span");
@@ -438,8 +485,8 @@ function systemImportHandler(ev)
        if (!ev.dataTransfer.files.length){
             // File object that mimics the desired fields from dataTransfer object
             var file = {
-                name : "invalid",
-                path : "invalid",
+                name :     "invalid",
+                path :     "invalid",
                 treePath : "invalid"
             }
 
@@ -464,7 +511,7 @@ function systemImportHandler(ev)
 
                 }
                 else{
-                    raiseAlert("Invalid file type","Please import a supported audio file (.wav/.mp3)");
+                    raiseAlert("Invalid file","Please import an audio file!");
                 }
             });
             return
@@ -491,47 +538,52 @@ function systemImportHandler(ev)
 
 function importFile(file, type)
 {
-    if(storeCompatibleFile(file)){        
-        if(type == "Project"){
-            // Show the imported file on Dropdown button
-            document.querySelector(".dropzone").classList = "dropzone";
-            document.querySelector(".dropzone p").innerHTML="Drag Audio File Here";
-            document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue("--text-color");
+    var newFile = ffmpegToWAV(file);
 
+    if(!newFile || !storeOutputIfExists(newFile)){      
+        raiseAlert("Error!", "Error while processing Input file!");
+        return;
+    }  
+
+    if(type == "Project"){
+        // Show the imported file on Dropdown button
+        document.querySelector(".dropzone").classList = "dropzone";
+        document.querySelector(".dropzone p").innerHTML="Drag Audio File Here";
+        document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue("--text-color");
+    }
+    else {
+        // Show the imported file on the dragzone
+        document.querySelector(".dropzone").classList = "dropzone full";
+        document.querySelector(".dropzone p").innerHTML = window.audioFile.originalName;
+
+        var selected = document.querySelector("#file-dropdown .selected");
+
+        if (selected){
+            selected.classList.remove("selected");
         }
-        else {
-            // Show the imported file on the dragzone
-            document.querySelector(".dropzone").classList = "dropzone full";
-            document.querySelector(".dropzone p").innerHTML = window.audioFile.fileName;
-
-            var selected = document.querySelector("#file-dropdown .selected");
-
-            if (selected){
-                selected.classList.remove("selected");
-            }
-            
-            document.querySelector("#file-dropdown .dropdown-current span").innerHTML = "Select from project files";
-            document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue('--ui-dim-color');
-        }
-        // Update UI functionality panel
-        var createMarkersButton = document.getElementById("create-markers");
-        createMarkersButton.disabled = true;
-        var markerNumberInput = document.getElementById("marker-number");
-        markerNumberInput.disabled = true;
         
-        markerNumberInput.classList.add("active")
+        document.querySelector("#file-dropdown .dropdown-current span").innerHTML = "Select from project files";
+        document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue('--ui-dim-color');
+    }
 
-        var waveFormHolder = document.querySelector(".waveform-holder");
-        waveFormHolder.style.pointerEvents  = "initial";
+    // Update UI functionality panel
+    var createMarkersButton = document.getElementById("create-markers");
+    createMarkersButton.disabled = true;
+    var markerNumberInput = document.getElementById("marker-number");
+    markerNumberInput.disabled = true;
+    
+    markerNumberInput.classList.add("active")
 
-        loadWaveform(file);
+    var waveFormHolder = document.querySelector(".waveform-holder");
+    waveFormHolder.style.pointerEvents  = "initial";
 
-        // Google Analytics
-        optionallySendGA(sendGAImportEvent, file, type);
+    loadWaveform();
 
-        // Run beat detection
-        detectBeats();
-    }   
+    // Google Analytics
+    optionallySendGA(sendGAImportEvent, file, type);
+
+    // Run beat detection
+    detectBeats(); 
 }
 
 /**
@@ -540,33 +592,30 @@ function importFile(file, type)
  * Takes a file object as an input which could be either the dataTransfer generated one
  * or the custom one from the selectFileFromDropdownHandler() function.
  */
-function storeCompatibleFile(file) {
-    var fileExtension = file.path.split('.').pop().toUpperCase();
-
-    if (fileExtension == "WAV" ||  fileExtension == "MP3"){
-        // Check if we have selected a new file and only then clear the old output 
-        if (window.audioFile.filePath != file.path){
-            cleanOutput()
-        }
-
-        // Store file information
-        window.audioFile.fileName = file.name;
-        window.audioFile.filePath = file.path;
-        window.audioFile.treePath = file.treePath;
-
-        // On successful import
-        return true;
-    }
-    else {
-
-        // On unsuccessful import
-        raiseAlert("Invalid file type","Please import a supported audio file (.wav/.mp3)");
-
+function storeOutputIfExists(file) {
+    // Check if the file does not exist
+    if (!fs.existsSync(file.path))
+    {
         // Clear file input
         var file = document.getElementById("file-input").value = null;
-
+        
         return false;
     }
+
+    // Check if we have selected a new file and only then clear the old output 
+    if (window.audioFile.filePath != file.path){
+        cleanOutput()
+    }
+
+    // Store file information
+    window.audioFile.fileName = file.name;
+    window.audioFile.filePath = file.path;
+    window.audioFile.treePath = file.treePath;
+    window.audioFile.originalName = file.oldName;
+
+    // On successful import
+    return true;
+
 }
 
 /**
@@ -576,21 +625,11 @@ function storeCompatibleFile(file) {
  * 'createMarkers()'.
  */ 
 async function detectBeats() {
-    if (window.audioFile.filePath == null) {
-        raiseAlert("Wrong Filetype","Please, drop an audio file (.wav or .mp3)" )
-        return;
-    }
-
-    if (window.audioFile.filePath.endsWith("mp3")){
-        ffmpegToWAV();
-        var filename = audioFile.fileName;
-        filename = filename.split(".");
-        filename.pop();
-        filename = filename.join(".");
-        var filepath = window.outputDir + filename + ".wav" 
-    } else {
-        var filepath = audioFile.filePath;
-    }
+    var filename = audioFile.fileName;
+    filename = filename.split(".");
+    filename.pop();
+    filename = filename.join(".");
+    var filepath = window.outputDir + filename + ".wav" 
 
     // Build command for detection
     var detectionCommand = window.detectorLocation + " -off " + '"' + filepath + '"' + " \"" + window.outputDir + "\"";
@@ -618,10 +657,9 @@ async function detectBeats() {
 
         // Close loading modal
         closeLoadingModal();
-        
-        if (audioFile.fileName.endsWith(".mp3")){
-            fs.unlink(window.outputDir + filename + ".wav", ()=>{})
-        }
+       
+        // Remove the temp file
+        fs.unlink(window.audioFile.filePath, () => {});
         return;
     });
 }
@@ -856,21 +894,15 @@ function clickAtTime(time) {
     clickVolume.gain.linearRampToValueAtTime(0, time + .001 + .008);
   }
 
-function loadWaveform(file){
+function loadWaveform(){
     // Disable play button
     document.querySelector(".play-button").disabled = true;
     document.querySelector(".play-button").classList.remove("playing");
-    // If audiofile is imported from project we need to read it and create a blob
-    if(!window.importedThroughSystem){
-        var buff = fs.readFileSync(window.audioFile.filePath);
-        let arrayBuff = buff.buffer.slice(buff.byteOffset, buff.byteOffset + buff.byteLength);
-        var blob = new Blob([arrayBuff]);
-        wavesurfer.loadBlob(blob);
-    }
-    else{
-        wavesurfer.loadBlob(file);
-
-    }
+    
+    // Load the file from path into BLOB
+    var blob = blobFromPath(window.audioFile.filePath);
+    wavesurfer.loadBlob(blob);
+    
     // When waveform is ready, reset zoom level
     wavesurfer.on('ready',()=>{
         // Min zoom (pixels per second) is waveform width divided by audio duration
