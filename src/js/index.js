@@ -924,12 +924,12 @@ function playbackHandler(){
 function zoomWaveform(e){
     e.preventDefault();
     let direction = Math.sign(-e.deltaY);
-    let force = Math.log((Math.abs(e.deltaY)/12)+1)/10;
+    let force = Math.log((Math.abs(e.deltaY)/12)+1)/30;
     let newWaveformZoom = Math.max(Math.min(waveformZoom + direction*force,1),0);
     console.log('force ',force)
     console.log('new ',newWaveformZoom)
     // For min zoom set overflow to visible so that handles show correctly
-    if(waveformZoom == 0){
+    if(newWaveformZoom == 0){
         document.querySelector("wave").style.overflow = "visible"
     }
     if(waveformZoom === newWaveformZoom){
@@ -940,7 +940,7 @@ function zoomWaveform(e){
     var wave = document.querySelector("wave");
     var pointerPos = e.clientX - wave.getBoundingClientRect().x;
     var offset = (wave.scrollLeft + pointerPos)/wave.scrollWidth;
-    wavesurfer.zoom((100-minPixPerSec)*(waveformZoom**2)+minPixPerSec);
+    wavesurfer.zoom((100-minPixPerSec)*(waveformZoom**3)+minPixPerSec);
     var position = wave.scrollWidth*offset - pointerPos;
     wave.scrollTo(position,0);
 }
