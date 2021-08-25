@@ -922,12 +922,12 @@ function playbackHandler(){
 }
 
 function zoomWaveform(e){
-    e.preventDefault();
+    if(e.ctrlKey){
+      e.preventDefault();
+    }
     let direction = Math.sign(-e.deltaY);
     let force = Math.log((Math.abs(e.deltaY)/12)+1)/30;
     let newWaveformZoom = Math.max(Math.min(waveformZoom + direction*force,1),0);
-    console.log('force ',force)
-    console.log('new ',newWaveformZoom)
     // For min zoom set overflow to visible so that handles show correctly
     if(newWaveformZoom == 0){
         document.querySelector("wave").style.overflow = "visible"
