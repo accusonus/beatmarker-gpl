@@ -30,6 +30,17 @@
     src: url('../fonts/AdobeClean-Bold.otf');
 }
 
+@font-face {
+  font-family: 'Mulish';
+  src: url('../fonts/Mulish-Regular.ttf');
+}
+
+@font-face {
+  font-family: 'Mulish';
+  src: url('../fonts/Mulish-Bold.ttf');
+  font-weight: bold;
+}
+
 :root {
   --bg-color: #1C1B1B;
   --text-color: #A2A2A2;
@@ -573,4 +584,93 @@ input[type=number]::-webkit-outer-spin-button {
 .wavesurfer-region{
   padding: 0 5px;
   margin: 0 -4px;
+}
+
+#side-menu.modal{
+  background-color: rgba(0,0,0,0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: -100%;
+  opacity: 0;
+  transition: top 0.4s, opacity 0.4s;
+}
+#side-menu.modal.show{
+  top: 0;
+  opacity: 1;
+}
+
+#side-menu .modal-menu{
+  background-color: rgba(0,0,0,0.9);
+}
+
+.menu-title{
+  color:rgb(255, 255, 255);
+  font-size: 32px;
+  font-weight: bold;
+  font-family: 'Mulish';
+  padding-bottom: 20px;
+  text-align: center;
+}
+
+.menu-link{
+  color:rgb(255, 255, 255);
+  font-size: 16px;
+  font-family: 'Mulish';
+  padding-bottom: 10px;
+  text-align: center;
+}
+
+.menu-link:last-child{
+  padding-bottom: 60px;
+}
+
+.side-menu-close-btn{
+  position: absolute;
+  right: 15px;
+  top: 10px;
+  width: 2px;
+  height: 20px;
+  color: rgb(255, 255, 255);
+  -webkit-transition: -webkit-transform 1s;
+  transition: transform 1s;
+  cursor: pointer;
+}
+
+.side-menu-close-btn:hover {
+  -webkit-transform: rotate(90deg);
+  -ms-transform: rotate(90deg);
+  transform: rotate(90deg);
+}
+
+.side-menu-close-btn:before {
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+
+.side-menu-close-btn:after {
+  -webkit-transform: rotate(-45deg);
+  -ms-transform: rotate(-45deg);
+  transform: rotate(-45deg);
+}
+
+.side-menu-close-btn:before,
+.side-menu-close-btn:after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 0px;
+  width: 2px;
+  height: 20px;
+  background: rgb(255, 255, 255);
+}
+
+.menu-link a{
+  color:rgb(255, 255, 255, .8);
+  transition: 300ms ease-in-out;
+}
+
+.menu-link a:hover{
+  color:rgb(255, 255, 255);
 }
