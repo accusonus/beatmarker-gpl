@@ -110,7 +110,7 @@
 		<div id="drag-overlay"></div>
 	</div>
 	<div class="bottom_bar">
-		<button id="licenser-btn" onclick="openSideMenu()"></button>
+		<button id="licenser-btn" onclick="toggleSideMenu()"></button>
 	</div>
 	<div id="alert-modal" class="modal">
 		<div class="modal-content">
@@ -150,8 +150,63 @@
 		</div>
 	</div>
 
+	<div id="register-login" class="modal">
+		<div id="register-screen" class="register-login-ins modal">
+			<div class="accusonus-logo"><img src="img/accusonusBlack.svg" draggable="false"></div>
+			<div class="register-form">
+				<div class="form-title bold">Create your free account to get started</div>
+				<div id="register-subtitle" class="form-title margin-bot-25">Enter your details below</div>
+				<div id="register-messages" class="form-messages"></div>
+				<div class="form-label">Email address</div>
+				<div class="form-input"><input type="text" id="regfusername" name="regfusername" placeholder="*Your email"></div>
+				<div class="form-label">Password</div>
+				<div class="form-input"><input type="password" id="regfpassword" name="regfpassword" placeholder="*Your password"></div>
+				<button class="form-button margin-bot-25" onclick="submitForm('Register')">Create new account</button>
+				<div class="form-text text-right margin-bot-25">Already an accusonus member? <a href="#" onclick="changeForm('Login')">Login</a></div>
+				<div class="form-text">An accusonus account will be created, a confirmation email will be sent and you will be subscribed to our newsletter. The accusonus account is required to start a free trial. By clicking "Create new account" you agree to accusonus' <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/general-terms')">Terms of Use</a> and <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/privacy-policy')">Privacy Policy</a>.</div>
+			</div>
+		</div>
+		<div id="login-screen" class="register-login-ins modal">
+			<div class="accusonus-logo"><img src="img/accusonusBlack.svg" draggable="false"></div>
+			<div class="login-form">
+				<div class="form-title bold">Login to Accusonus</div>
+				<div id="login-subtitle" class="form-title margin-bot-25">Enter your details below</div>
+				<div id="login-messages" class="form-messages"></div>
+				<div class="form-label">Email address</div>
+				<div class="form-input"><input type="text" id="logfusername" name="logfusername" placeholder="*Your email"></div>
+				<div class="form-label">Password</div>
+				<div class="form-input forgot-password">
+					<input type="password" id="logfpassword" name="logfpassword" placeholder="*Your password">
+					<div class="tag"><a href="#" onclick="changeForm('Reset')">Forgot?</a></div>
+				</div>
+				<button class="form-button margin-bot-25" onclick="submitForm('Login')">Login</button>
+				<div class="form-text text-right margin-bot-25">Don’t have an account? <a href="#" onclick="changeForm('Register')">Sign up now</a></div>
+			</div>
+		</div>
+		<div id="resetpass-screen" class="register-login-ins modal">
+			<div class="accusonus-logo"><img src="img/accusonusBlack.svg" draggable="false"></div>
+			<div class="reset-form">
+				<div class="form-title bold">Reset Password</div>
+				<div id="reset-subtitle" class="form-title margin-bot-25">Enter your details below</div>
+				<div id="reset-messages" class="form-messages"></div>
+				<div class="form-label">Email address</div>
+				<div class="form-input"><input type="text" id="resfusername" name="resfusername" placeholder="*Your email"></div>
+				<button class="form-button margin-bot-10" onclick="submitForm('Reset')">Send Reset Instractions</button>
+				<div class="form-text text-right margin-bot-5">Remember Your Password? <a href="#" onclick="changeForm('Login')">Login</a></div>
+				<div class="form-text text-right">Don’t have an account? <a href="#" onclick="changeForm('Register')">Sign up now</a></div>
+			</div>
+		</div>
+		<div id="thankyou-screen" class="register-login-ins modal">
+			<div class="accusonus-logo"><img src="img/accusonusBlack.svg" draggable="false"></div>
+			<div class="thankyou-ins">
+				<div class="thankyou-check"><img src="img/greenCheck.svg" draggable="false"></div>
+				<div id="thankyou-message">Successful registration/login</div>
+			</div>
+		</div>
+	</div>
+
 	<div id="side-menu" class="modal">
-		<div class="side-menu-close-btn" onclick="closeSideMenu()"></div>
+		<div class="side-menu-close-btn" onclick="toggleSideMenu()"></div>
 		<div class="modal-menu">
 			<div class="menu-title">BeatMarker</div>
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://account.accusonus.com/profile')">My account</a></div>

@@ -533,7 +533,7 @@ input[type=number]::-webkit-outer-spin-button {
   align-items: center;
 }
 
-.modal button {
+.modal .button {
 	width: 50px;
 	font-size: 10px;
 	border: 1px solid;
@@ -595,6 +595,7 @@ input[type=number]::-webkit-outer-spin-button {
   opacity: 0;
   transition: top 0.4s, opacity 0.4s;
 }
+
 #side-menu.modal.show {
   top: 0;
   opacity: 1;
@@ -669,4 +670,182 @@ input[type=number]::-webkit-outer-spin-button {
 
 .menu-link a:hover {
   color:rgb(255, 255, 255);
+}
+
+#register-login.modal {
+  display: block;
+  top: -100%;
+  opacity: 0;
+  transition: top 0.4s, opacity 0.4s;
+}
+
+#register-login.modal.show {
+  top: 0;
+  opacity: 1;
+}
+
+.register-login-ins {
+  width: calc(100% - 110px);
+  height: calc(100% - 50px);
+  background-color: rgb(255, 255, 255);
+  padding: 15px 55px;
+}
+
+.register-login-ins.modal {
+  display: block;
+  top: -100%;
+  opacity: 0;
+  transition: top 0.4s, opacity 0.4s;
+}
+
+.register-login-ins.modal.show {
+  top: 0;
+  opacity: 1;
+}
+
+#thankyou-screen .accusonus-logo {
+  position: absolute;
+  top: 15px;
+  left: 55px;
+}
+
+.thankyou-ins {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100%;
+}
+
+.thankyou-check {
+  margin-bottom: 30px;
+}
+
+#thankyou-message {
+  color:rgb(33, 33, 33);
+  font-size: 24px;
+  font-family: 'Mulish';
+}
+
+.form-title {
+  font-size: 18px;
+  font-family: 'Mulish';
+  margin-bottom: 5px;
+  color:rgb(33, 33, 33);
+}
+
+.bold {
+  font-weight: bold;
+}
+
+.form-label {
+  font-size: 12px;
+  font-family: 'Mulish';
+  padding-left: 10px;
+  margin-bottom: 5px;
+}
+
+.form-input {
+  margin-bottom: 10px;
+}
+
+.form-input input {
+  padding: 5px 10px;
+  font-size: 14px;
+  font-family: 'Mulish';
+  width: calc(100% - 22px);
+  color: rgb(89, 89, 89);
+  background-color: rgb(249, 249, 249);
+  border: 1px solid rgb(216, 216, 216);
+  border-radius: 4px;
+}
+
+.form-input input:focus {
+  border-color: rgb(150 150 150);
+  outline: none;
+}
+
+.form-input.forgot-password {
+  display: grid;
+}
+
+.tag {
+  justify-self: end;
+  align-self: center;
+  padding-right: 10px;
+  font-size: 14px;
+  font-family: 'Mulish';
+  color: rgb(89, 89, 89);
+}
+
+.tag a {
+  color: rgb(20, 115, 230);
+  transition: 300ms ease-in-out;
+}
+
+.tag a:hover {
+  color: rgb(20, 115, 230, .4);
+}
+
+.form-input.forgot-password > * {
+  grid-area: 1 / -1;
+}
+
+.form-button {
+  width: 100%;
+  background: rgb(255, 255, 255);
+  padding: 10px 0px;
+  color: rgb(0, 0, 0);
+  font-size: 14px;
+  font-family: 'Mulish';
+  font-weight: bold;
+  border: 1px solid rgb(26, 26, 26);
+  border-radius: 4px;
+}
+
+.form-button:hover {
+  background: rgb(245, 245, 245);
+}
+
+.form-text {
+  font-size: 12px;
+  font-family: 'Mulish';
+  color: rgb(148, 148, 148);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.margin-bot-25 {
+  margin-bottom: 25px;
+}
+
+.margin-bot-10 {
+  margin-bottom: 10px;
+}
+
+.margin-bot-5 {
+  margin-bottom: 5px;
+}
+
+.form-text a {
+  color: rgb(20, 115, 230);
+  transition: 300ms ease-in-out;
+}
+
+.form-text a:hover {
+  color: rgb(20, 115, 230, .4);
+}
+
+.form-messages{
+  margin: 20px 0px;
+}
+
+.form-messages-green {
+  color: rgb(104, 202, 61);
+}
+
+.form-messages-red {
+  color: rgb(242, 56, 62);
 }
