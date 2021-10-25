@@ -110,7 +110,7 @@
 		<div id="drag-overlay"></div>
 	</div>
 	<div class="bottom_bar">
-		<button id="licenser-btn" onclick="licenser()"></button>
+		<button id="licenser-btn" onclick="openSideMenu()"></button>
 	</div>
 	<div id="alert-modal" class="modal">
 		<div class="modal-content">
@@ -147,6 +147,17 @@
 	<div id="loading-modal" class="modal">
 		<div class="modal-content">
 			<p id="loading-text"></p>
+		</div>
+	</div>
+
+	<div id="side-menu" class="modal">
+		<div class="side-menu-close-btn" onclick="closeSideMenu()"></div>
+		<div class="modal-menu">
+			<div class="menu-title">BeatMarker</div>
+			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://account.accusonus.com/profile')">My account</a></div>
+			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/store')">Upgrade</a></div>
+			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/')">Visit accusonus.com</a></div>
+			<div class="menu-link"><a href="#" onclick="logoutUser()">Log out</a></div>
 		</div>
 	</div>
 	</body>	

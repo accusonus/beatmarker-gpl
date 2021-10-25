@@ -1177,3 +1177,120 @@ function closeLoadingModal(){
         clearInterval(switchTextInterval);
     }
 }
+
+// Open side menu
+function openSideMenu(){
+    var modal = document.getElementById('side-menu');
+    modal.classList.add('show');
+}
+
+// Close side menu
+function closeSideMenu(){
+    var modal = document.getElementById('side-menu');
+    modal.classList.remove('show');
+}
+
+/*
+ * Api calls
+*/
+
+// Register user
+function signupUser(username, password){
+    var formdata = new FormData();
+    formdata.append("username", username);
+    formdata.append("password", password);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+    };
+
+    fetch("https://accusonus.com/api/v1/user/sign-up", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // After sign up we will show the thank you page
+            // Not implemented yet
+            console.log(result);
+            if (result.result == 30){
+                console.log("Successfully created account");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
+// Login user
+function loginUser(username, password){
+    var formdata = new FormData();
+    formdata.append("username", username);
+    formdata.append("password", password);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+    };
+
+    fetch("https://accusonus.com/api/v1/user/login", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            // After logging in we will show the thank you page
+            // Not implemented yet
+            console.log(result);
+            if (result.result == 21){
+                console.log("Successfully logged in");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
+// Reset user password
+function passwordresetUser(username){
+    var formdata = new FormData();
+    formdata.append("username", username);
+
+    var requestOptions = {
+        method: 'POST',
+        body: formdata,
+    };
+
+    fetch("https://accusonus.com/api/v1/user/password-reset", requestOptions)
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            if (result.result == 24){
+                console.log("Successfully Reset Password");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
+// Logout user
+function logoutUser(){
+    fetch("https://accusonus.com/api/v1/user/logout", { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            // After logging out we will show the login screen
+            // Not implemented yet
+            console.log(result);
+            if (result.result == 23){
+                closeSideMenu();
+                console.log("Successfully logged out");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
+
+// Check user status
+function statusUser(){
+    fetch("https://accusonus.com/api/v1/user/status", { method: 'POST' })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            if (result.result == 22){
+                console.log("You are logged out");
+            }
+            if (result.result == 20){
+                console.log("You are logged in");
+            }
+        })
+        .catch(error => console.log('error', error));
+}
