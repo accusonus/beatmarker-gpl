@@ -17,6 +17,10 @@
 // with this program; if not, write to the Free Software Foundation, Inc.,
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
+// Check if user is already logged in
+document.addEventListener('DOMContentLoaded', function(e) {
+    statusUser();
+});
 
 // Prevent default behavior for drop events for the whole html window
 window.addEventListener("dragover", function(e){
@@ -101,7 +105,7 @@ function showLicenserReminder(){
     exec(authenticationCommand, {encoding: "UTF-8"}, function (err, stdout){
         if (stdout != 1){
             // If interval has changed since last call
-            licenser() 
+            //licenser() 
         }
     });
 }
@@ -1178,16 +1182,233 @@ function closeLoadingModal(){
     }
 }
 
-// Open side menu
-function openSideMenu(){
+// Toggle side menu
+function toggleSideMenu(){
+    var modalMainRegLog = document.getElementById('register-login')
     var modal = document.getElementById('side-menu');
-    modal.classList.add('show');
+
+    if (!modalMainRegLog.classList.contains('show') && !modal.classList.contains('show')){
+        modal.classList.add('show');
+    }
+    else {
+        modal.classList.remove('show');
+    }
 }
 
-// Close side menu
-function closeSideMenu(){
-    var modal = document.getElementById('side-menu');
-    modal.classList.remove('show');
+// Toggle parent modal of Register / login screen
+function toggleMainRegLogModal(){
+    var modalMainRegLog = document.getElementById('register-login');
+    if (modalMainRegLog.classList.contains('show')){
+        modalMainRegLog.classList.remove('show');
+    }
+    else {
+        modalMainRegLog.classList.add('show');
+    }
+}
+
+// Toggle form modals inside parent Register / login screen
+function changeForm(page){
+    var modalRegister = document.getElementById('register-screen');
+    var modalLogin = document.getElementById('login-screen');
+    var modalReset = document.getElementById('resetpass-screen');
+    var modalThankyou = document.getElementById('thankyou-screen');
+    var modalMainRegLog = document.getElementById('register-login');
+
+    if (!modalMainRegLog.classList.contains('show')){
+        toggleMainRegLogModal();
+    }
+
+    if (page == 'Login'){
+        if (modalRegister.classList.contains('show')){
+            modalRegister.classList.remove('show');
+        }
+
+        if (modalReset.classList.contains('show')){
+            modalReset.classList.remove('show');
+        }
+
+        modalLogin.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('logfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Login');
+            }
+        });
+        
+        document.getElementById('logfpassword').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Login');
+            }
+        });
+    }
+
+    if (page == 'Register'){
+        if (modalLogin.classList.contains('show')){
+            modalLogin.classList.remove('show');
+        }
+
+        if (modalReset.classList.contains('show')){
+            modalReset.classList.remove('show');
+        }
+
+        modalRegister.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('regfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Register');
+            }
+        });
+        
+        document.getElementById('regfpassword').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Register');
+            }
+        });
+    }
+
+    if (page == 'Reset'){
+        if (modalRegister.classList.contains('show')){
+            modalRegister.classList.remove('show');
+        }
+
+        if (modalLogin.classList.contains('show')){
+            modalLogin.classList.remove('show');
+        }
+
+        modalReset.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('resfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Reset');
+            }
+        });
+    }
+
+    if (page == 'Thankyou'){
+        var thankyouMessage = document.getElementById('thankyou-message');
+        if (modalRegister.classList.contains('show')){
+            thankyouMessage.innerHTML = 'Successful registration';
+            modalRegister.classList.remove('show');
+        }
+
+        if (modalLogin.classList.contains('show')){
+            thankyouMessage.innerHTML = 'Successful login';
+            modalLogin.classList.remove('show');
+        }
+
+        modalThankyou.classList.add('show');
+    }
+}
+
+// Close thank you modal and container modal
+function closeThankyouPage(){
+    var modalThankyou = document.getElementById('thankyou-screen');
+    if (modalThankyou.classList.contains('show')){
+        modalThankyou.classList.remove('show');
+        toggleMainRegLogModal();
+    }
+}
+
+// Function that process form requests
+function submitForm(form){
+    var fusername, fpassword;
+
+    if (form == 'Login'){
+        fusername = document.getElementById('logfusername');
+        fpassword = document.getElementById('logfpassword');
+
+        if (fusername.value == null || fpassword.value == null || fusername.value == '' || fpassword.value == ''){
+            showMessages('Login', 'Error', 'Please provide email and password');
+        }
+        else {
+            loginUser(fusername.value, fpassword.value);
+        }
+    }
+
+    if (form == 'Register'){
+        fusername = document.getElementById('regfusername');
+        fpassword = document.getElementById('regfpassword');
+
+        if (fusername.value == null || fpassword.value == null || fusername.value == '' || fpassword.value == ''){
+            showMessages('Register', 'Error', 'Please provide email and password');
+        }
+        else {
+            signupUser(fusername.value, fpassword.value);
+        }
+    }
+
+    if (form == 'Reset'){
+        fusername = document.getElementById('resfusername');
+
+        if (fusername.value == null || fusername.value == ''){
+            showMessages('Reset', 'Error', 'Please provide email');
+        }
+        else {
+            passwordresetUser(fusername.value);
+        }
+    }
+}
+
+// Show messages to the user
+function showMessages(form, type, message){
+    var messageContainer;
+    var formSubtitle;
+
+    if (form == 'Login'){
+        messageContainer = document.getElementById('login-messages');
+        formSubtitle = document.getElementById('login-subtitle');
+    }
+
+    if (form == 'Register'){
+        messageContainer = document.getElementById('register-messages');
+        formSubtitle = document.getElementById('register-subtitle');
+    }
+
+    if (form == 'Reset'){
+        messageContainer = document.getElementById('reset-messages');
+        formSubtitle = document.getElementById('reset-subtitle');
+    }
+
+    if (type == 'Error'){
+        formSubtitle.style.display = 'none';
+        messageContainer.style.display = 'inherit';
+        messageContainer.classList.add('form-messages-red');
+        messageContainer.innerHTML = (message);
+    }
+
+    if (type == 'Pass'){
+        formSubtitle.style.display = 'none';
+        messageContainer.style.display = 'inherit';
+        messageContainer.classList.add('form-messages-green');
+        messageContainer.innerHTML = (message);
+    }
+}
+
+// Remove messages and clear all inputs (used when user logs out)
+function removeMessages(){
+    var messageContainerLog = document.getElementById('login-messages');
+    var formSubtitleLog = document.getElementById('login-subtitle');
+    var messageContainerReg = document.getElementById('register-messages');
+    var formSubtitleReg = document.getElementById('register-subtitle');
+    var messageContainerRes = document.getElementById('reset-messages');
+    var formSubtitleRes = document.getElementById('reset-subtitle');
+
+    formSubtitleLog.style.display = 'inherit';
+    messageContainerLog.style.display = 'none';
+    formSubtitleReg.style.display = 'inherit';
+    messageContainerReg.style.display = 'none';
+    formSubtitleRes.style.display = 'inherit';
+    messageContainerRes.style.display = 'none';
+    document.getElementById('regfusername').value= null;
+    document.getElementById('regfpassword').value= null;
+    document.getElementById('logfusername').value= null;
+    document.getElementById('logfpassword').value= null;
+    document.getElementById('resfusername').value= null;
 }
 
 /*
@@ -1197,22 +1418,26 @@ function closeSideMenu(){
 // Register user
 function signupUser(username, password){
     var formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
+    formdata.append('username', username);
+    formdata.append('password', password);
 
     var requestOptions = {
         method: 'POST',
         body: formdata,
     };
 
-    fetch("https://accusonus.com/api/v1/user/sign-up", requestOptions)
+    fetch('https://accusonus.com/api/v1/user/sign-up', requestOptions)
         .then(response => response.json())
         .then(result => {
-            // After sign up we will show the thank you page
-            // Not implemented yet
-            console.log(result);
             if (result.result == 30){
-                console.log("Successfully created account");
+                showMessages('Register', 'Pass', result.success);
+                changeForm('Thankyou');
+                setTimeout(() => {
+                    closeThankyouPage();
+                }, 3000);
+            }
+            else {
+                showMessages('Register', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
         .catch(error => console.log('error', error));
@@ -1221,22 +1446,26 @@ function signupUser(username, password){
 // Login user
 function loginUser(username, password){
     var formdata = new FormData();
-    formdata.append("username", username);
-    formdata.append("password", password);
+    formdata.append('username', username);
+    formdata.append('password', password);
 
     var requestOptions = {
         method: 'POST',
         body: formdata,
     };
 
-    fetch("https://accusonus.com/api/v1/user/login", requestOptions)
+    fetch('https://accusonus.com/api/v1/user/login', requestOptions)
         .then(response => response.json())
         .then(result => {
-            // After logging in we will show the thank you page
-            // Not implemented yet
-            console.log(result);
             if (result.result == 21){
-                console.log("Successfully logged in");
+                showMessages('Login', 'Pass', result.success);
+                changeForm('Thankyou');
+                setTimeout(() => {
+                    closeThankyouPage();
+                }, 3000);
+            }
+            else {
+                showMessages('Login', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
         .catch(error => console.log('error', error));
@@ -1245,19 +1474,22 @@ function loginUser(username, password){
 // Reset user password
 function passwordresetUser(username){
     var formdata = new FormData();
-    formdata.append("username", username);
+    formdata.append('username', username);
 
     var requestOptions = {
         method: 'POST',
         body: formdata,
     };
 
-    fetch("https://accusonus.com/api/v1/user/password-reset", requestOptions)
+    fetch('https://accusonus.com/api/v1/user/password-reset', requestOptions)
         .then(response => response.json())
         .then(result => {
-            console.log(result);
             if (result.result == 24){
-                console.log("Successfully Reset Password");
+                showMessages('Login', 'Pass', result.success);
+                changeForm('Login');
+            }
+            else {
+                showMessages('Reset', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
         .catch(error => console.log('error', error));
@@ -1265,15 +1497,13 @@ function passwordresetUser(username){
 
 // Logout user
 function logoutUser(){
-    fetch("https://accusonus.com/api/v1/user/logout", { method: 'POST' })
+    fetch('https://accusonus.com/api/v1/user/logout', { method: 'POST' })
         .then(response => response.json())
         .then(result => {
-            // After logging out we will show the login screen
-            // Not implemented yet
-            console.log(result);
             if (result.result == 23){
-                closeSideMenu();
-                console.log("Successfully logged out");
+                removeMessages();
+                toggleSideMenu();
+                changeForm('Login');
             }
         })
         .catch(error => console.log('error', error));
@@ -1281,15 +1511,11 @@ function logoutUser(){
 
 // Check user status
 function statusUser(){
-    fetch("https://accusonus.com/api/v1/user/status", { method: 'POST' })
+    fetch('https://accusonus.com/api/v1/user/status', { method: 'POST' })
         .then(response => response.json())
         .then(result => {
-            console.log(result);
             if (result.result == 22){
-                console.log("You are logged out");
-            }
-            if (result.result == 20){
-                console.log("You are logged in");
+                changeForm('Register');
             }
         })
         .catch(error => console.log('error', error));
