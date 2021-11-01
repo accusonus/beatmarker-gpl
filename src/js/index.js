@@ -18,7 +18,7 @@
 // 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
 // Check if user is already logged in
-document.addEventListener('DOMContentLoaded', function(event) {
+document.addEventListener('DOMContentLoaded', function(e) {
     statusUser();
 });
 
@@ -1228,6 +1228,20 @@ function changeForm(page){
         }
 
         modalLogin.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('logfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Login');
+            }
+        });
+        
+        document.getElementById('logfpassword').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Login');
+            }
+        });
     }
 
     if (page == 'Register'){
@@ -1240,6 +1254,20 @@ function changeForm(page){
         }
 
         modalRegister.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('regfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Register');
+            }
+        });
+        
+        document.getElementById('regfpassword').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Register');
+            }
+        });
     }
 
     if (page == 'Reset'){
@@ -1252,14 +1280,24 @@ function changeForm(page){
         }
 
         modalReset.classList.add('show');
+        // Add listeners on enter key press to submit forms
+        document.getElementById('resfusername').addEventListener('keyup', function(e) {
+            if (e.key === 'Enter')
+            {
+                submitForm('Reset');
+            }
+        });
     }
 
     if (page == 'Thankyou'){
+        var thankyouMessage = document.getElementById('thankyou-message');
         if (modalRegister.classList.contains('show')){
+            thankyouMessage.innerHTML = 'Successful registration';
             modalRegister.classList.remove('show');
         }
 
         if (modalLogin.classList.contains('show')){
+            thankyouMessage.innerHTML = 'Successful login';
             modalLogin.classList.remove('show');
         }
 
@@ -1272,8 +1310,8 @@ function closeThankyouPage(){
     var modalThankyou = document.getElementById('thankyou-screen');
     if (modalThankyou.classList.contains('show')){
         modalThankyou.classList.remove('show');
+        toggleMainRegLogModal();
     }
-    toggleMainRegLogModal();
 }
 
 // Function that process form requests
