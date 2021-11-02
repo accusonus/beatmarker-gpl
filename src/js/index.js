@@ -1311,6 +1311,7 @@ function closeThankyouPage(){
     if (modalThankyou.classList.contains('show')){
         modalThankyou.classList.remove('show');
         toggleMainRegLogModal();
+        accountIconShowHide();
     }
 }
 
@@ -1411,6 +1412,19 @@ function removeMessages(){
     document.getElementById('resfusername').value= null;
 }
 
+// Hide - Show account icon
+function accountIconShowHide(){
+    var licencerBtn = document.getElementById('licenser-btn');
+    if ( licencerBtn.classList.contains('hide') ){
+        licencerBtn.classList.remove('hide');
+        licencerBtn.classList.add('show');
+    }
+    else {
+        licencerBtn.classList.remove('show');
+        licencerBtn.classList.add('hide');
+    }
+}
+
 /*
  * Api calls
 */
@@ -1430,11 +1444,13 @@ function signupUser(username, password){
         .then(response => response.json())
         .then(result => {
             if (result.result == 30){
+                acProductLineIntent(username);
+                formActionTrack('Register', result.uid, username)
                 showMessages('Register', 'Pass', result.success);
                 changeForm('Thankyou');
                 setTimeout(() => {
                     closeThankyouPage();
-                }, 3000);
+                }, 1500);
             }
             else {
                 showMessages('Register', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
@@ -1458,11 +1474,12 @@ function loginUser(username, password){
         .then(response => response.json())
         .then(result => {
             if (result.result == 21){
+                formActionTrack('Login', result.uid, username)
                 showMessages('Login', 'Pass', result.success);
                 changeForm('Thankyou');
                 setTimeout(() => {
                     closeThankyouPage();
-                }, 3000);
+                }, 1500);
             }
             else {
                 showMessages('Login', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
@@ -1485,6 +1502,7 @@ function passwordresetUser(username){
         .then(response => response.json())
         .then(result => {
             if (result.result == 24){
+                formActionTrack('Reset', undefined, username)
                 showMessages('Login', 'Pass', result.success);
                 changeForm('Login');
             }
@@ -1503,6 +1521,7 @@ function logoutUser(){
             if (result.result == 23){
                 removeMessages();
                 toggleSideMenu();
+                accountIconShowHide();
                 changeForm('Login');
             }
         })
@@ -1517,6 +1536,74 @@ function statusUser(){
             if (result.result == 22){
                 changeForm('Register');
             }
+            else{
+                accountIconShowHide();
+            }
         })
         .catch(error => console.log('error', error));
+}
+
+// Update ActiveCampaign product line intent
+function acProductLineIntent(userEmail){
+    var acUrlProductLineIntent = 'https://api.activecampaign.accusonus.com/ActiveCampaign/updateproductlineintent';
+
+    var intentData = {
+        userEmail: userEmail,
+        productLineIntent: 'Beat Marking',
+    }
+
+    fetch(acUrlProductLineIntent, {
+        method: "POST",
+        mode:'no-cors',
+        body: JSON.stringify(intentData),
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .catch(error => console.log('error', error));
+}
+
+/*
+ * DataLayer Events
+ */
+
+// Register - Login - Reset Password
+function formActionTrack(type, userID, userEmail){
+    var action, formEvent, isloggedin;
+    var userid = (userID === undefined)
+        ? undefined
+        : `${userID}`;
+
+    if (type === 'Register'){
+        formEvent = 'Account Registration';
+        action = 'Total Registrations';
+        isloggedin = 1;
+    }
+    else if (type === 'Login') {
+        formEvent = 'Account Login';
+        action = 'Total Logins';
+        isloggedin = 1;
+    }
+    else if (type === 'Reset'){
+        formEvent = 'Account Reset Password';
+        action = 'Total Password Resets';
+        isloggedin = 0;
+    }
+
+    var formEventObject = { 
+        event: formEvent,
+        ga: {
+            category: 'All User Events',
+            action: action,
+            label: 'BeatMarker',
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(formEventObject);
 }
