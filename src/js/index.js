@@ -1595,7 +1595,7 @@ function formActionTrack(type, userID, userEmail){
         ga: {
             category: 'All User Events',
             action: action,
-            label: 'BeatMarker',
+            label: 'BeatMarker Plugin',
         },
         user: {
             user_id: userid,
