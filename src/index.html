@@ -27,18 +27,15 @@
 		<meta charset="utf-8">
 		<title>BeatMarker</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
-		<!-- Google Analytics -->
 		<script src="js/gaua.js"></script>
+		<!-- Google Tag Manager -->
 		<script>
-			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-			ga('create', BeatMarkerGAUA, {'cookieDomain': 'none'});
-			ga('set', 'checkProtocolTask', null);
-			ga('set', 'checkStorageTask', null);
-			ga('require', 'displayfeatures');
-			ga('send', 'pageview', './index.html');
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+			var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+			j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;
+			f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer', BeatMarkerGAUA);
 		</script>
-		<script async src='https://www.google-analytics.com/analytics.js'></script>
-		<!-- End Google Analytics -->
+		<!-- End Google Tag Manager -->
 		<script src="js/version.js"></script>
 		<script src="js/index.js"></script>
 		<script src="./lib/CSInterface.js"></script>
@@ -47,6 +44,17 @@
 		<script src="./lib/wavesurfer.regions.min.js"></script>
 	</head>
 	<body onload="onLoad()">
+	<!-- Google Tag Manager (noscript) -->
+	<script>
+		var gpath = 'https://www.googletagmanager.com/ns.html?id=' + BeatMarkerGAUA;
+		var gframe = document.createElement('iframe');
+		gframe.src =  gpath;
+		gframe.height = 0;
+		gframe.width = 0;
+		gframe.style = 'display:none;visibility:hidden';
+		document.body.prepend(gframe);
+	</script>
+	<!-- End Google Tag Manager (noscript) -->
     <div id="master-panel" ondrop="systemImportHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeave(event);">
 		<img id="logo" src="img/accusonus.svg" onclick="openAboutBox()" draggable="false">
 		<div id="extension-panel">
@@ -54,7 +62,7 @@
 				<div class="container" id="cellar-container">
 					<div class="box-container">
 						<img src="img/CellarBanner.png" id="cellar-banner" draggable="false">
-						<button class="button cellar-panel-btn" onclick="window.cep.util.openURLInDefaultBrowser('https://music-cellar.accusonus.com')">
+						<button class="button cellar-panel-btn" onclick="window.cep.util.openURLInDefaultBrowser('https://music-cellar.accusonus.com/?utm_source=beatmarker&utm_medium=plugin&utm_campaign=BeatmarkerMusicCellar')">
 							Get Free Music
 						</button>
 					</div>
@@ -110,7 +118,7 @@
 		<div id="drag-overlay"></div>
 	</div>
 	<div class="bottom_bar">
-		<button id="licenser-btn" onclick="toggleSideMenu()"></button>
+		<button id="licenser-btn" class="hide" onclick="toggleSideMenu()"></button>
 	</div>
 	<div id="alert-modal" class="modal">
 		<div class="modal-content">

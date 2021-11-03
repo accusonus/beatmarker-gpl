@@ -500,7 +500,14 @@ input[type=number]::-webkit-outer-spin-button {
 
 #licenser-btn:active {
   background-image: url('../img/link_on.svg');
- 
+}
+
+#licenser-btn.hide {
+  display: none;
+}
+
+#licenser-btn.show {
+  display: inline-block;
 }
 
 #drag-overlay {
@@ -849,3 +856,4 @@ input[type=number]::-webkit-outer-spin-button {
 .form-messages-red {
   color: rgb(242, 56, 62);
 }
+
