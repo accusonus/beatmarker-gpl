@@ -561,7 +561,6 @@ function systemImportHandler(ev)
             audioContext.decodeAudioData(arrayBuffer)
                 .then(function(buffer){
                 const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
-                sessionStorage.setItem('fileDuration', duration);
                 audioImportTrack('Select File', duration);
             });
         };
@@ -706,7 +705,9 @@ async function detectBeats() {
 function setMarkerInputUI(value){
     var markerInput = document.querySelector("#marker-number");
     markerInput.value = value;
-    createMarkersTrack(markerInput.value, sessionStorage.getItem('fileDuration'));
+    if (sessionStorage.getItem("initialMarkers") === null){
+        sessionStorage.setItem('initialMarkers', markerInput.value);
+    }
 }
 
 function setMaxMarkersUI(max){
@@ -1069,7 +1070,9 @@ function evalScript(script, callback) {
  * sequence with markers based on the selected beat detection modes.
  */
 function createMarkers() {
-    showLicenserReminder();
+    var markerAmount = parseInt(document.querySelector("#marker-number").value);
+    createMarkersTrack(markerAmount, sessionStorage.getItem('initialMarkers'));
+
     var treepath = window.audioFile.treePath;
     // Pause playback
     wavesurfer.pause();
@@ -1804,8 +1807,8 @@ function createMarkersTrack(numberMarkers, fileLength){
         event: 'Create Markers',
         ga: {
             category: 'Create Markers',
-            action: numberMarkers,
-            label: fileLength,
+            action: `${numberMarkers}`,
+            label: `${fileLength}`,
         },
         user: {
             user_id: userid,
