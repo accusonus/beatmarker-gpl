@@ -1362,6 +1362,7 @@ function submitForm(form){
         fpassword = document.getElementById('logfpassword');
 
         if (fusername.value == null || fpassword.value == null || fusername.value == '' || fpassword.value == ''){
+            userNotificationsTrack('108');
             showMessages('Login', 'Error', 'Please provide email and password');
         }
         else {
@@ -1374,6 +1375,7 @@ function submitForm(form){
         fpassword = document.getElementById('regfpassword');
 
         if (fusername.value == null || fpassword.value == null || fusername.value == '' || fpassword.value == ''){
+            userNotificationsTrack('108');
             showMessages('Register', 'Error', 'Please provide email and password');
         }
         else {
@@ -1386,6 +1388,7 @@ function submitForm(form){
         fusername = document.getElementById('resfusername');
 
         if (fusername.value == null || fusername.value == ''){
+            userNotificationsTrack('108');
             showMessages('Reset', 'Error', 'Please provide email');
         }
         else {
