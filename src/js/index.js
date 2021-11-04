@@ -19,6 +19,21 @@
 
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', function(e) {
+    if (typeof(Storage) !== "undefined") {
+        if (localStorage.getItem("privacy") === null) {
+            localStorage.setItem("privacy", "true");
+        }
+    }
+
+    var checkBox = document.getElementById("privacy-policy-checkbox");
+
+    if (localStorage.getItem("privacy") === "true"){
+        checkBox.checked = true;
+    }
+    else {
+        checkBox.checked = false;
+    }
+
     statusUser();
 });
 
@@ -477,6 +492,9 @@ function selectFileFromDropdownHandler()
  */
 function systemImportHandler(ev) 
 {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const reader = new FileReader();
+
     // If the file came from the Drag and Drop event
     if (ev.type == "drop"){
 
@@ -523,11 +541,31 @@ function systemImportHandler(ev)
         // Imported through system
         var file = ev.dataTransfer.files[0];
         var type = 'Filesystem (Drag & Drop)';
+
+        reader.onload = function(e){
+            const arrayBuffer = e.target.result;
+            audioContext.decodeAudioData(arrayBuffer)
+                .then(function(buffer){
+                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
+                audioImportTrack('Drag & Drop', duration);
+            });
+        };
+        reader.readAsArrayBuffer(file);
     }
     else{
         // Regular system import
         var file = document.getElementById("file-input").files[0];
         var type = 'Filesystem (Button)';
+        reader.onload = function(e){
+            const arrayBuffer = e.target.result;
+            audioContext.decodeAudioData(arrayBuffer)
+                .then(function(buffer){
+                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
+                sessionStorage.setItem('fileDuration', duration);
+                audioImportTrack('Select File', duration);
+            });
+        };
+        reader.readAsArrayBuffer(file);
     }
 
     // Set the import mode to filesystem
@@ -582,9 +620,6 @@ function importFile(file, type)
     waveFormHolder.style.pointerEvents  = "initial";
 
     loadWaveform();
-
-    // Google Analytics
-    optionallySendGA(sendGAImportEvent, file, type);
 
     // Run beat detection
     detectBeats(); 
@@ -671,6 +706,7 @@ async function detectBeats() {
 function setMarkerInputUI(value){
     var markerInput = document.querySelector("#marker-number");
     markerInput.value = value;
+    createMarkersTrack(markerInput.value, sessionStorage.getItem('fileDuration'));
 }
 
 function setMaxMarkersUI(max){
@@ -1069,13 +1105,6 @@ function createMarkers() {
             document.querySelector("#undo-markers").disabled = false;
         }
     });
-
-    optionallySendGA(ga,'send',
-      'event',
-      'User Action',
-      'Create Markers',
-      window.importedThroughSystem == null ? 'Markers only' : 'Markers and Sequence',
-    );
 }
 
 function undoMarkers() {
@@ -1315,6 +1344,12 @@ function closeThankyouPage(){
     }
 }
 
+// Button click Music cellar
+function musicCellarBtnClick(){
+    musicCellarLinkTrack();
+    window.cep.util.openURLInDefaultBrowser('https://music-cellar.accusonus.com/?utm_source=beatmarker&utm_medium=plugin&utm_campaign=BeatmarkerMusicCellar');
+}
+
 // Function that process form requests
 function submitForm(form){
     var fusername, fpassword;
@@ -1339,6 +1374,7 @@ function submitForm(form){
             showMessages('Register', 'Error', 'Please provide email and password');
         }
         else {
+            openLoadingModal('Creating your account');
             signupUser(fusername.value, fpassword.value);
         }
     }
@@ -1425,6 +1461,17 @@ function accountIconShowHide(){
     }
 }
 
+function setPrivacy() {
+  var checkBox = document.getElementById("privacy-policy-checkbox");
+
+  if (checkBox.checked == true){
+    localStorage.setItem("privacy", "true");
+  }
+  else {
+    localStorage.setItem("privacy", "false");
+  }
+}
+
 /*
  * Api calls
 */
@@ -1444,15 +1491,20 @@ function signupUser(username, password){
         .then(response => response.json())
         .then(result => {
             if (result.result == 30){
+                closeLoadingModal();
                 acProductLineIntent(username);
                 formActionTrack('Register', result.uid, username)
                 showMessages('Register', 'Pass', result.success);
+                updateUserInfo(result.uid, result.mail);
+                userNotificationsTrack(result.result);
                 changeForm('Thankyou');
                 setTimeout(() => {
                     closeThankyouPage();
                 }, 1500);
             }
             else {
+                closeLoadingModal();
+                userNotificationsTrack(result.result);
                 showMessages('Register', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
@@ -1476,12 +1528,15 @@ function loginUser(username, password){
             if (result.result == 21){
                 formActionTrack('Login', result.uid, username)
                 showMessages('Login', 'Pass', result.success);
+                updateUserInfo(result.uid, result.mail);
+                userNotificationsTrack(result.result);
                 changeForm('Thankyou');
                 setTimeout(() => {
                     closeThankyouPage();
                 }, 1500);
             }
             else {
+                userNotificationsTrack(result.result);
                 showMessages('Login', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
@@ -1505,8 +1560,10 @@ function passwordresetUser(username){
                 formActionTrack('Reset', undefined, username)
                 showMessages('Login', 'Pass', result.success);
                 changeForm('Login');
+                userNotificationsTrack(result.result);
             }
             else {
+                userNotificationsTrack(result.result);
                 showMessages('Reset', 'Error', result.error.replace(/(<([^>]+)>)/gi, ''));
             }
         })
@@ -1522,6 +1579,8 @@ function logoutUser(){
                 removeMessages();
                 toggleSideMenu();
                 accountIconShowHide();
+                updateUserInfo();
+
                 changeForm('Login');
             }
         })
@@ -1535,12 +1594,41 @@ function statusUser(){
         .then(result => {
             if (result.result == 22){
                 changeForm('Register');
+                updateUserInfo();
             }
-            else{
+            else {
                 accountIconShowHide();
+                updateUserInfo(result.uid, result.mail);
             }
         })
         .catch(error => console.log('error', error));
+}
+
+// Update user Info
+function updateUserInfo(userID, userEmail){
+    var saveInfo = false;
+    if (userID !== undefined && userEmail !== undefined){
+        saveInfo = true;
+    }
+
+    if (typeof(Storage) !== "undefined") {
+        if (saveInfo){
+            if (localStorage.getItem("userID") === null || localStorage.getItem("userID") === 'null') {
+                localStorage.setItem("userID", userID);
+            }
+            if (localStorage.getItem("userEmail") === null || localStorage.getItem("userEmail") === 'null') {
+                localStorage.setItem("userEmail", userEmail);
+            }
+        }
+        else {
+            if (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null') {
+                localStorage.setItem("userID", null);
+            }
+            if (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null') {
+                localStorage.setItem("userEmail", null);
+            }
+        }
+    }
 }
 
 // Update ActiveCampaign product line intent
@@ -1569,6 +1657,9 @@ function acProductLineIntent(userEmail){
 
 // Register - Login - Reset Password
 function formActionTrack(type, userID, userEmail){
+    if (localStorage.privacy === "false")
+        return;
+    
     var action, formEvent, isloggedin;
     var userid = (userID === undefined)
         ? undefined
@@ -1606,4 +1697,153 @@ function formActionTrack(type, userID, userEmail){
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(formEventObject);
+}
+
+// PageInfo
+function pageInfoTrack(){
+    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
+        ? localStorage.userID
+        : undefined;
+    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
+        ? localStorage.userEmail
+        : undefined;
+    var isloggedin = (userid && userEmail)
+        ? 1
+        : 0;
+
+    var pageInfoObject = { 
+        event: 'Page Info',
+        pageInfo: {
+            isPluginView: 'false',
+            sysEnv: 'BeatMarker'
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+    
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(pageInfoObject);
+}
+
+// User Notifications
+function userNotificationsTrack(responseCode){
+    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
+        ? localStorage.userID
+        : undefined;
+    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
+        ? localStorage.userEmail
+        : undefined;
+    var isloggedin = (userid && userEmail)
+        ? 1
+        : 0;
+
+    var userNotificationsObject = { 
+        event: 'User Notifications',
+        ga: {
+            category: 'User Notifications',
+            action: 'BeatMarker Plugin',
+            label: `${responseCode}`,
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(userNotificationsObject);
+}
+
+// Audio Import
+function audioImportTrack(actionType, fileLength){
+    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
+        ? localStorage.userID
+        : undefined;
+    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
+        ? localStorage.userEmail
+        : undefined;
+    var isloggedin = (userid && userEmail)
+        ? 1
+        : 0;
+
+    var audioImportObject = { 
+        event: 'Audio Import',
+        ga: {
+            category: 'Audio Import',
+            action: actionType,
+            label: fileLength,
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(audioImportObject);
+}
+
+// Create Markers
+function createMarkersTrack(numberMarkers, fileLength){
+    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
+        ? localStorage.userID
+        : undefined;
+    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
+        ? localStorage.userEmail
+        : undefined;
+    var isloggedin = (userid && userEmail)
+        ? 1
+        : 0;
+
+    var createMarkersObject = { 
+        event: 'Create Markers',
+        ga: {
+            category: 'Create Markers',
+            action: numberMarkers,
+            label: fileLength,
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(createMarkersObject);
+}
+
+// Music Cellar Link
+function musicCellarLinkTrack(){
+    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
+        ? localStorage.userID
+        : undefined;
+    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
+        ? localStorage.userEmail
+        : undefined;
+    var isloggedin = (userid && userEmail)
+        ? 1
+        : 0;
+
+    var musicCellarLinkObject = { 
+        event: 'Music Cellar Link',
+        ga: {
+            category: 'Click',
+            action: 'Inbound Click',
+            label: 'BeatMarker Plugin',
+        },
+        user: {
+            user_id: userid,
+            loggedin: isloggedin,
+            email: userEmail
+        } 
+    };
+
+    window.dataLayer = window.dataLayer || [];
+    window.dataLayer.push(musicCellarLinkObject);
 }
