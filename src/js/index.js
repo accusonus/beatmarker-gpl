@@ -1707,6 +1707,9 @@ function formActionTrack(type, userID, userEmail){
 
 // PageInfo
 function pageInfoTrack(){
+    if (localStorage.privacy === "false")
+        return;
+
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
         ? localStorage.userID
         : undefined;
@@ -1736,6 +1739,9 @@ function pageInfoTrack(){
 
 // User Notifications
 function userNotificationsTrack(responseCode){
+    if (localStorage.privacy === "false")
+        return;
+
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
         ? localStorage.userID
         : undefined;
@@ -1766,6 +1772,9 @@ function userNotificationsTrack(responseCode){
 
 // Audio Import
 function audioImportTrack(actionType, fileLength){
+    if (localStorage.privacy === "false")
+        return;
+
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
         ? localStorage.userID
         : undefined;
@@ -1796,6 +1805,9 @@ function audioImportTrack(actionType, fileLength){
 
 // Create Markers
 function createMarkersTrack(numberMarkers, fileLength){
+    if (localStorage.privacy === "false")
+        return;
+
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
         ? localStorage.userID
         : undefined;
@@ -1826,6 +1838,9 @@ function createMarkersTrack(numberMarkers, fileLength){
 
 // Music Cellar Link
 function musicCellarLinkTrack(){
+    if (localStorage.privacy === "false")
+        return;
+        
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
         ? localStorage.userID
         : undefined;
