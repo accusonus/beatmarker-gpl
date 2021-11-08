@@ -54,7 +54,7 @@ const theme = window.getComputedStyle(document.querySelector(":root"));
 
 const fs = require('fs');
 const exec = require('child_process').exec;
-const execSync = require('child_process').execSync
+const execSync = require('child_process').execSync;
 const os = require('os');
 const mimeLookup = require('mime-types').lookup;
 
@@ -544,7 +544,7 @@ function importFile(file, type)
 {
     var newFile = ffmpegToWAV(file);
 
-    if(!newFile || !storeOutputIfExists(newFile)){      
+    if(!newFile || !storeOutputIfExists(file)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
     }  
@@ -587,7 +587,7 @@ function importFile(file, type)
     optionallySendGA(sendGAImportEvent, file, type);
 
     // Run beat detection
-    detectBeats(); 
+    detectBeats(newFile); 
 }
 
 /**
@@ -623,17 +623,12 @@ function storeOutputIfExists(file) {
 }
 
 /**
- * Method that runs the beat detection analysis by spawning
- * a python script. This method creates a JSON method in 
- * extesion's output directory, which will be loaded by
- * 'createMarkers()'.
+ * Method that runs the beat detection analysis by using IBT
+ * This method creates txt files in extesion's output directory, 
+ * which will be loaded by 'createMarkers()'.
  */ 
-async function detectBeats() {
-    var filename = audioFile.fileName;
-    filename = filename.split(".");
-    filename.pop();
-    filename = filename.join(".");
-    var filepath = window.outputDir + filename + ".wav" 
+async function detectBeats(tempFile) {
+    var filepath = tempFile.path
 
     // Build command for detection
     var detectionCommand = window.detectorLocation + " -off " + '"' + filepath + '"' + " \"" + window.outputDir + "\"";
@@ -663,7 +658,7 @@ async function detectBeats() {
         closeLoadingModal();
        
         // Remove the temp file
-        fs.unlink(window.audioFile.filePath, () => {});
+        fs.unlink(tempFile.path, () => {});
         return;
     });
 }
@@ -1054,8 +1049,8 @@ function createMarkers() {
     } else {
         var fileName = thisFileName.replace(/\\/g,"/");
     }
- 
     var thisFilePath = window.audioFile.filePath.replace(/\\/g,"/");
+
     evalScript("$._BDP_.createMarkers([" + window.selectedBeats.toString() + "]," +
                                                               window.importedThroughSystem + ",'" +
                                                               fileName + "','" +
