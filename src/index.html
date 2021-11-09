@@ -28,20 +28,21 @@
 		<title>BeatMarker</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<script src="js/gaua.js"></script>
-		<!-- Google Tag Manager -->
-		<script>
-			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-			var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-			j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;
-			f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer', BeatMarkerGAUA);
-		</script>
-		<!-- End Google Tag Manager -->
 		<script src="js/version.js"></script>
 		<script src="js/index.js"></script>
 		<script src="./lib/CSInterface.js"></script>
 		<script src="./lib/wavesurfer.min.js"></script>
 		<script src="./lib/wavesurfer.markers.min.js"></script>
 		<script src="./lib/wavesurfer.regions.min.js"></script>
+		<!-- Google Tag Manager -->
+		<script>
+			pageInfoTrack();
+			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
+			var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
+			j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;
+			f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer', BeatMarkerGAUA);
+		</script>
+		<!-- End Google Tag Manager -->
 	</head>
 	<body onload="onLoad()">
 	<!-- Google Tag Manager (noscript) -->
@@ -62,7 +63,7 @@
 				<div class="container" id="cellar-container">
 					<div class="box-container">
 						<img src="img/CellarBanner.png" id="cellar-banner" draggable="false">
-						<button class="button cellar-panel-btn" onclick="window.cep.util.openURLInDefaultBrowser('https://music-cellar.accusonus.com/?utm_source=beatmarker&utm_medium=plugin&utm_campaign=BeatmarkerMusicCellar')">
+						<button class="button cellar-panel-btn" onclick="musicCellarBtnClick()">
 							Get Free Music
 						</button>
 					</div>
@@ -220,6 +221,16 @@
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://account.accusonus.com/profile')">My account</a></div>
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/store')">Upgrade</a></div>
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/')">Visit accusonus.com</a></div>
+			<div id="privacy-policy" class="menu-link">
+				<div>
+					<input type="checkbox" id="privacy-policy-checkbox" onclick="setPrivacy()">
+				</div>
+				<div>
+					By agreeing to send anonymous usage data, you are helping us improve our products!
+					You can read our
+					<a onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/content/privacy-policy')" href="#">Privacy Policy</a>.
+				</div>
+			</div>
 			<div class="menu-link"><a href="#" onclick="logoutUser()">Log out</a></div>
 		</div>
 	</div>

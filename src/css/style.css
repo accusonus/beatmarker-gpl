@@ -553,6 +553,10 @@ input[type=number]::-webkit-outer-spin-button {
   overflow-y: auto;
 }
 
+#loading-modal {
+  z-index: 7;
+}
+
 #loading-modal > div {
   min-width: 40px;
 }
@@ -857,3 +861,45 @@ input[type=number]::-webkit-outer-spin-button {
   color: rgb(242, 56, 62);
 }
 
+#privacy-policy {
+  padding: 35px 55px;
+  display: flex;
+  text-align: left;
+}
+
+#privacy-policy div:first-child {
+  margin-right: 5px;
+}
+
+#privacy-policy a{
+  color: rgb(255, 255, 255);
+  position: relative;
+  transition: 300ms ease-in-out;
+}
+
+#privacy-policy a:after{
+  position: absolute;
+  content: '';
+  height: 1px;
+  bottom: 0; 
+  margin: 0 auto;
+  left: 0;
+  right: 0;
+  width: 100%;
+  background: rgb(255, 255, 255);
+  opacity: 1;
+  transition: 300ms ease-in-out;
+}
+
+#privacy-policy a:hover{
+  color: rgb(255, 255, 255, .8);
+}
+
+#privacy-policy a:hover:after{
+  opacity: 0;
+}
+
+#privacy-policy-checkbox{
+  width: 24px;
+  height: 24px;
+}
