@@ -109,22 +109,6 @@ window.allBeats = [];
 window.availableBeats = [];
 window.selectedBeats = [];
 
-function licenser(){
-    exec(window.licenserLocation, {encoding: "UTF-8"});
-}
-
-function showLicenserReminder(){
-    var authenticationCommand = window.licenserLocation + " --verify";
-
-    // Start child process
-    exec(authenticationCommand, {encoding: "UTF-8"}, function (err, stdout){
-        if (stdout != 1){
-            // If interval has changed since last call
-            //licenser() 
-        }
-    });
-}
-
 function getSystemSetup(){
     // Get system's username
     var localUserName = os.userInfo().username.toString();
@@ -283,51 +267,6 @@ function dragLeave(ev) {
     if(ev.target.id == "drag-overlay"){
         // reset color if you leave the drop area
         document.querySelector("#master-panel").classList.remove('dragover');
-    }
-}
-
-function checkForOptin(){
-    // Check if the user has opted in to sending usage analytics
-    if(cep.fs.stat(window.outputDir + "/OPTIN").err == 0){
-        return true;
-    }
-    else{
-        return false;
-    }
-}
-
-/**
- * Wrapper function to run Google Analytics functions as callbacks optionally
- * (checks if user has opted-in via the window.analytics variable)
- */
-function optionallySendGA(callback, ...callbackArgs){
-    if(window.analytics){
-        callback(...callbackArgs);
-    }
-}
-
-// Google Analytics
-// Expects a label argument.
-function sendGAImportEvent(files, label)
-{
-    // Get duration of the first file
-    const reader = new FileReader();
-    reader.addEventListener("load", function () {
-        let element = document.createElement("video");
-        element.addEventListener('durationchange', (event) => {
-            ga('send',
-              'event',
-              'User Action',
-              'Import',
-              label,
-              Math.round(element.duration),
-            );
-          });
-        element.src = reader.result;
-      }, false);
-
-    if (files[0]) {
-        reader.readAsDataURL(files[0]);
     }
 }
 
@@ -839,11 +778,8 @@ function onLoad() {
     el.addEventListener("mousedown", attachListeners);
     el.addEventListener("mouseup", detachListeners);
 
-    // check if user has opted in and set analytics behaviour
-    window.analytics = checkForOptin();
     // Load the JSX file
     loadJSX();
-    showLicenserReminder();
     evalScript("$._BDP_.registerProjectPanelSelectionChangedFxn()");
     evalScript("$._BDP_.registerActiveSequenceSelectionChangedFxn()");
     // The ibt algorithm doesn't generate the output directory
@@ -901,10 +837,6 @@ function onLoad() {
     })
     // Initialise click sound
     clickInit();
-    // Open About box if not opt-in
-    if (checkForOptin() == false) {
-        openAboutBox();
-    }
 }
 
 function clickInit(){
@@ -1140,9 +1072,7 @@ function openAboutBox(){
     const modal = document.querySelector('#about-modal');
     const aboutBox = modal.querySelector('.modal-content');
     const version = aboutBox.querySelector('#commit-hash');
-    const optin = aboutBox.querySelector('#optin');
 
-    optin.checked = checkForOptin();
     version.textContent = BeatMarkerVersion;
     modal.style.display = "flex";
     aboutBox.scrollTop = 0;
@@ -1150,19 +1080,6 @@ function openAboutBox(){
 
 function closeAboutBox(){
     const modal = document.querySelector('#about-modal');
-    const optin = document.querySelector('#optin');
-    const optinFile = checkForOptin();
-
-    if(optin.checked && !optinFile){
-        // makes an OPTIN file
-        cep.fs.writeFile(window.outputDir + "/OPTIN","");
-        window.analytics = true;
-    }
-    else if(!optin.checked && optinFile){
-        // deletes OPTIN file
-        cep.fs.deleteFile(window.outputDir + "/OPTIN");
-        window.analytics = false;
-    }
     modal.style.display = "none";
 }
 
