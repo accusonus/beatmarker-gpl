@@ -896,11 +896,18 @@ function loadWaveform(){
         // For min zoom set overflow to visible so that handles show correctly
         document.querySelector("wave").style.overflow = "visible";
         // Add active region from track start to track end
+        var barscolor = theme.getPropertyValue("--barscolor-color");
+        if (localStorage.getItem("colorMode") === "Light"){
+            barscolor = theme.getPropertyValue("--barscolor-color-light");
+        }
+        else if (localStorage.getItem("colorMode") === "Dark") {
+            barscolor = theme.getPropertyValue("--barscolor-color-dark");
+        }
         wavesurfer.clearRegions();
         let handleStyleParams = {
             width: '3px',
             cursor: 'col-resize',
-            backgroundColor: '#eb2d5d'
+            backgroundColor: barscolor
         }
         window.region = wavesurfer.addRegion({
             start: 0,

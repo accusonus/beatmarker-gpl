@@ -53,17 +53,19 @@
   --wavecolor-color: #a2a2a2;
   --progresscolor-color: #f2a2a2;
   --cursorcolor-color: #000000;
+  --barscolor-color: #F2383E;
   /* Light Mode Colors */
-  --bg-color-light: #DADDE2;
-  --text-color-light: #43655A;
-  --ui-dim-color-light: #4B4B4B;
-  --accent-color-light: #00754B;
-  --disabled-bd-light: #B1BDC5;
-  --disabled-color-light: #889FA5;
-  --active-bd: #43655A;
-  --wavecolor-color-light: #4B4B4B;
-  --progresscolor-color-light: #54ECC4;
+  --bg-color-light: #FFFFFF;
+  --text-color-light: #212121;
+  --ui-dim-color-light: #D8D8D8;
+  --accent-color-light: #1473E6;
+  --disabled-bd-light: #BCBCBC;
+  --disabled-color-light: #969696;
+  --active-bd-light: #1473E6;
+  --wavecolor-color-light: #949494;
+  --progresscolor-color-light: #212121;
   --cursorcolor-color-light: #C6C6C6;
+  --barscolor-color-light: #1473E6;
   /* Dark Mode Colors */
   --bg-color-dark: #000000;
   --text-color-dark: #C6C6C6;
@@ -71,30 +73,33 @@
   --accent-color-dark: #FB4F93;
   --disabled-bd-dark: #303030;
   --disabled-color-dark: #616161;
-  --active-bd: #5E5E5E;
+  --active-bd-dark: #5E5E5E;
   --wavecolor-color-dark:#C6C6C6;
   --progresscolor-color-dark: #FB4F93;
   --cursorcolor-color-dark: #C6C6C6;
+  --barscolor-color-light: #1473E6;
 }
 
 body, .button {
   font-size: 14px;
   background-color: var(--bg-color);
-  color: var(--text-color);
 }
 
 body.light{
   background-color: var(--bg-color-light);
+  color: var(--text-color-light);
 }
 
 body.dark{
   background-color: var(--bg-color-dark);
+  color: var(--text-color-dark);
 }
 
 body {
   font-family: 'AdobeClean-Regular';
   user-select: none;
   overflow: hidden;
+  color: var(--text-color);
 }
 
 a {
@@ -159,16 +164,18 @@ wave{
 .button {
   font-family: 'AdobeClean-Bold';
   width: 140px;
-  border: 2px solid var(--text-color);
+  border: 2px solid var(--active-bd);
   padding: 6px 0;
   border-radius: 40px;
   outline: none;
   transition: all 130ms;
+  color: var(--text-color);
 }
 
 .button.light {
   background-color: var(--bg-color-light);
-  border: 2px solid var(--text-color-light);
+  border: 2px solid var(--active-bd-light);
+  color: var(--active-bd-light);
 }
 
 .button.dark {
@@ -188,7 +195,7 @@ wave{
 
 .button.light:hover {
   color: var(--bg-color-light);
-  background-color: var(--text-color-light);
+  background-color: var(--active-bd-light);
 }
 
 .button.dark:hover {
@@ -429,7 +436,7 @@ hr{
 .dropdown.light {
   background-color: var(--bg-color-light);
   color: var(--text-color-light);
-	border: 1px solid var(--ui-dim-color-light);
+	border: 1px solid var(--text-color-light);
 }
 
 .dropdown.dark {
