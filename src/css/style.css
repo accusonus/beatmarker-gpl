@@ -66,18 +66,6 @@
   --progresscolor-color-light: #212121;
   --cursorcolor-color-light: #C6C6C6;
   --barscolor-color-light: #1473E6;
-  /* Dark Mode Colors */
-  --bg-color-dark: #000000;
-  --text-color-dark: #C6C6C6;
-  --ui-dim-color-dark: #4B4B4B;
-  --accent-color-dark: #FB4F93;
-  --disabled-bd-dark: #303030;
-  --disabled-color-dark: #616161;
-  --active-bd-dark: #5E5E5E;
-  --wavecolor-color-dark:#C6C6C6;
-  --progresscolor-color-dark: #FB4F93;
-  --cursorcolor-color-dark: #C6C6C6;
-  --barscolor-color-dark: #FB4F93;
 }
 
 body, .button {
@@ -88,11 +76,6 @@ body, .button {
 body.light{
   background-color: var(--bg-color-light);
   color: var(--text-color-light);
-}
-
-body.dark{
-  background-color: var(--bg-color-dark);
-  color: var(--text-color-dark);
 }
 
 body {
@@ -178,11 +161,6 @@ wave{
   color: var(--active-bd-light);
 }
 
-.button.dark {
-  background-color: var(--bg-color-dark);
-  border: 2px solid var(--text-color-dark);
-}
-
 .cellar-panel-btn {
   width: 175px;
   margin-top: 12px;
@@ -198,11 +176,6 @@ wave{
   background-color: var(--active-bd-light);
 }
 
-.button.dark:hover {
-  color: var(--bg-color-dark);
-  background-color: var(--text-color-dark);
-}
-
 .button:active {
   border-color: var(--active-bd);
   color: var(--bg-color);
@@ -212,11 +185,6 @@ wave{
 .button.light:active {
   background-color: var(--active-bd-light);
   border-color: var(--active-bd-light);
-}
-
-.button.dark:active {
-  background-color: var(--active-bd-dark);
-  border-color: var(--active-bd-dark);
 }
 
 .button:disabled {
@@ -231,21 +199,12 @@ wave{
   color: var(--disabled-color-light);
 }
 
-.button.dark:disabled {
-  background-color: var(--disabled-bd-dark);
-  color: var(--disabled-color-dark);
-}
-
 button:disabled:hover {
   color: var(--disabled-color);
 }
 
 .button.light:disabled:hover {
   color: var(--disabled-color-light);
-}
-
-.button.dark:disabled:hover {
-  color: var(--disabled-color-dark);
 }
 
 .play-button {
@@ -409,17 +368,8 @@ hr{
   color: var(--accent-color-light);
 }
 
-#marker-number.dark {
-  background-color: var(--bg-color-dark);
-  color: var(--accent-color-dark);
-}
-
 #marker-number.light::placeholder {
   color: var(--accent-color-light);
-}
-
-#marker-dark.light::placeholder {
-  color: var(--accent-color-dark);
 }
 
 .dropdown {
@@ -438,13 +388,6 @@ hr{
   color: var(--text-color-light);
 	border: 1px solid var(--text-color-light);
 }
-
-.dropdown.dark {
-  background-color: var(--bg-color-dark);
-  color: var(--text-color-dark);
-	border: 1px solid var(--ui-dim-color-dark);
-}
-
 
 .dropdown-current {
 	text-overflow: ellipsis;
@@ -471,11 +414,6 @@ hr{
   background-color: var(--text-color-light);
 }
 
-.dropdown-arrow.dark {
-  background-color: var(--text-color-dark);
-}
-
-
 .open .dropdown-arrow {
 	clip-path: polygon(0 65%, 15% 80%, 50% 45%, 85% 80%, 100% 65%, 50% 15%);
 }
@@ -500,10 +438,6 @@ hr{
 
 .dropdown-options.light {
   background-color: var(--bg-color-light);
-}
-
-.dropdown-options.dark {
-  background-color: var(--bg-color-dark);
 }
 
 .dropdown.open .dropdown-options {
@@ -610,7 +544,7 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .bottom_bar {
-  background-color: var(--bg-color-dark);
+  background-color: var(--bg-color);
   width: 100%;
   text-align: right;
   height: 20px;
@@ -622,10 +556,6 @@ input[type=number]::-webkit-outer-spin-button {
 
 .bottom_bar.light {
   background-color: var(--text-color-light);
-}
-
-.bottom_bar.dark {
-  background-color: var(--disabled-bd-dark);
 }
 
 #licenser-btn {
@@ -702,11 +632,6 @@ input[type=number]::-webkit-outer-spin-button {
 .modal-content.light {
   background-color: var(--bg-color-light);
   border: 1px solid var(--ui-dim-color-light);
-}
-
-.modal-content.dark {
-  background-color: var(--bg-color-dark);
-  border: 1px solid var(--ui-dim-color-dark);
 }
 
 #loading-modal {
@@ -1014,10 +939,9 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 #privacy-policy {
-  padding: 50px 55px 0px;
+  padding: 35px 55px;
   display: flex;
   text-align: left;
-  font-size: 11px;
 }
 
 #privacy-policy div:first-child {
@@ -1060,74 +984,47 @@ input[type=number]::-webkit-outer-spin-button {
 #colorMode-switch {
   position: relative;
   display: inline-block;
-  width: 80px;
-  height: 37px;
-  border-radius: 37px;
-  border: 1px #DEE4E7 solid;
-  background-color: #222222;
+  width: 50px;
+  height: 21px;
+  border-radius: 21px;
+  background-color: #1473E6;
   cursor: pointer;
   transition: all .3s;
   overflow: hidden;
   box-shadow: 0px 0px 2px rgba(0,0,0, .3);
 }
+
 #colorMode-switch input {
   display: none;
 }
+
 #colorMode-switch input:checked + div {
-  left: calc(80px - 32px);
+  left: calc(50px - 20px);
   box-shadow: 0px 0px 0px white;
 }
+
 #colorMode-switch div {
   position: absolute;
-  width: 27px;
-  height: 27px;
-  border-radius: 27px;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
   background-color: white;
-  top: 5px;
+  top: 3px;
   left: 5px;
   box-shadow: 0px 0px 1px rgb(150,150,150);
   transition: all .3s;
 }
-#colorMode-switch div:before, #colorMode-switch div:after {
-  position: absolute;
-  content: 'Light';
-  width: calc(80px - 40px);
-  height: 37px;
-  line-height: 37px;
-  font-family: 'Mulish';
-  font-size: 14px;
-  font-weight: bold;
-  top: -5px;
-}
-#colorMode-switch div:before {
-  content: 'Dark';
-  color: #DEE4E7;
-  left: 100%;
-}
-#colorMode-switch div:after {
-  content: 'Light';
-  right: 100%;
-  color: #222222;
-}
-
-#colorMode-switch.colorMode-switch-checked {
-  background-color : #DEE4E7;
-  box-shadow: none;
-}
-
-#colorMode-switch.colorMode-switch-checked div {
-  background-color : #222222;
-  box-shadow: none;
-}
 
 .colormodeContainer {
   display: flex;
-  align-items: center;
-  justify-content: space-around;
-  padding: 0px 15px;
+  padding: 0px 10px;
+  position: absolute;
+  right: 0;
+  bottom: 30px;
 }
 
-.colormodeContainerTitle {
-  margin: 35px 0px 15px;
-  font-weight: bold;
+#colorMode-moon, #colorMode-sun {
+  padding: 0px 5px;
+  width: 15px;
+  height: 21px;
 }

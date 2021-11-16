@@ -799,9 +799,6 @@ function onLoad() {
     if (localStorage.getItem("colorMode") === "Light"){
         progresscolor = theme.getPropertyValue("--progresscolor-color-light");
     }
-    else if (localStorage.getItem("colorMode") === "Dark") {
-        progresscolor = theme.getPropertyValue("--progresscolor-color-dark");
-    }
     // load wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#wavesurfer',
@@ -900,9 +897,6 @@ function loadWaveform(){
         if (localStorage.getItem("colorMode") === "Light"){
             barscolor = theme.getPropertyValue("--barscolor-color-light");
         }
-        else if (localStorage.getItem("colorMode") === "Dark") {
-            barscolor = theme.getPropertyValue("--barscolor-color-dark");
-        }
         wavesurfer.clearRegions();
         let handleStyleParams = {
             width: '3px',
@@ -926,10 +920,6 @@ function loadWaveform(){
     if (localStorage.getItem("colorMode") === "Light"){
         wavecolor = theme.getPropertyValue("--wavecolor-color-light");
         cursorcolor = theme.getPropertyValue("--cursorcolor-color-light");
-    }
-    else if (localStorage.getItem("colorMode") === "Dark") {
-        wavecolor = theme.getPropertyValue("--wavecolor-color-dark");
-        cursorcolor = theme.getPropertyValue("--cursorcolor-color-dark");
     }
     // Clear any previous markers
     wavesurfer.markers.clear();
@@ -1425,26 +1415,16 @@ function setPrivacy() {
   }
 }
 
-function setColorMode(mode) {
-    var checkBoxDefaultColor = document.getElementById("colorMode-check");
-    if (mode === 'colorMode'){
-        var colorLabel = document.getElementById('colorMode-switch');
-        var colorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
-        if (colorInput.checked == true){
-            checkBoxDefaultColor.checked = false;
-            colorLabel.classList.add('colorMode-switch-checked');
-            localStorage.setItem("colorMode", "Light");
-        }
-        else {
-            checkBoxDefaultColor.checked = false;
-            colorLabel.classList.remove('colorMode-switch-checked');
-            localStorage.setItem("colorMode", "Dark");
-        }
+function setColorMode() {
+    var colorLabel = document.getElementById('colorMode-switch');
+    var colorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
+    if (colorInput.checked == true){
+        colorLabel.classList.add('colorMode-switch-checked');
+        localStorage.setItem("colorMode", "Light");
     }
     else {
-        if (checkBoxDefaultColor.checked == true){
-            localStorage.setItem("colorMode", "Default");
-        }
+        colorLabel.classList.remove('colorMode-switch-checked');
+        localStorage.setItem("colorMode", "Default");
     }
     themeInit();
   }
@@ -1452,16 +1432,15 @@ function setColorMode(mode) {
   function themeInit(){
     // Initial value of color mode
     var checkBoxcolorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
-    var checkBoxDefaultColor = document.getElementById("colorMode-check");
     if (localStorage.getItem("colorMode") === "Light"){
         var colorLabel = document.getElementById('colorMode-switch');
-        checkBoxDefaultColor.checked = false;
         checkBoxcolorInput.checked = true;
         colorLabel.classList.add('colorMode-switch-checked');
 
         // Theme changes
+        document.getElementById('colorMode-moon').src= 'img/moonLight.svg';
+        document.getElementById('colorMode-sun').src= 'img/sunLight.svg';
         document.body.classList.add("light");
-        document.body.classList.remove("dark");
         document.getElementById("logo").src="img/accusonusBlack.svg";
         if (wavesurfer){
             wavesurfer.setWaveColor(theme.getPropertyValue("--wavecolor-color-light"));
@@ -1470,82 +1449,32 @@ function setColorMode(mode) {
         }
 
         document.getElementById("marker-number").classList.add("light");
-        document.getElementById("marker-number").classList.remove("dark");
         var but = document.getElementsByClassName("button");
         var i;
         for ( i = 0; i < but.length; i++) {
             but[i].classList.add("light");
-            but[i].classList.remove("dark");
         }
         var drop = document.getElementsByClassName("dropdown");
         for (i = 0; i < drop.length; i++) {
             drop[i].classList.add("light");
-            drop[i].classList.remove("dark");
         }
         var dropOpt = document.getElementsByClassName("dropdown-options");
         for (i = 0; i < dropOpt.length; i++) {
             dropOpt[i].classList.add("light");
-            dropOpt[i].classList.remove("dark");
         }
         var dropArr = document.getElementsByClassName("dropdown-arrow");
         for (i = 0; i < dropArr.length; i++) {
             dropArr[i].classList.add("light");
-            dropArr[i].classList.remove("dark");
         }
         var modalCon = document.getElementsByClassName("modal-content");
         for (i = 0; i < modalCon.length; i++) {
             modalCon[i].classList.add("light");
-            modalCon[i].classList.remove("dark");
-        }
-    }
-    else if (localStorage.getItem("colorMode") === "Dark") {
-        checkBoxDefaultColor.checked = false;
-        checkBoxcolorInput.checked = false;
-
-        // Theme changes
-        document.body.classList.add("dark");
-        document.body.classList.remove("light");
-        document.getElementById("logo").src="img/accusonus.svg";
-        if (wavesurfer){
-            wavesurfer.setWaveColor(theme.getPropertyValue("--wavecolor-color-dark"));
-            wavesurfer.setProgressColor(theme.getPropertyValue("--progresscolor-color-dark"));
-            wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color-dark"));
-        }
-
-        document.getElementById("marker-number").classList.add("dark");
-        document.getElementById("marker-number").classList.remove("light");
-        var but = document.getElementsByClassName("button");
-        var i;
-        for (i = 0; i < but.length; i++) {
-            but[i].classList.add("dark");
-            but[i].classList.remove("light");
-        }
-        var drop = document.getElementsByClassName("dropdown");
-        for (i = 0; i < drop.length; i++) {
-            drop[i].classList.add("dark");
-            drop[i].classList.remove("light");
-        }
-        var dropOpt = document.getElementsByClassName("dropdown-options");
-        for (i = 0; i < dropOpt.length; i++) {
-            dropOpt[i].classList.add("dark");
-            dropOpt[i].classList.remove("light");
-        }
-        var dropArr = document.getElementsByClassName("dropdown-arrow");
-        for (i = 0; i < dropArr.length; i++) {
-            dropArr[i].classList.add("dark");
-            dropArr[i].classList.remove("light");
-        }
-        var modalCon = document.getElementsByClassName("modal-content");
-        for (i = 0; i < modalCon.length; i++) {
-            modalCon[i].classList.add("dark");
-            modalCon[i].classList.remove("light");
         }
     }
     else {
-        checkBoxDefaultColor.checked = true;
-
         // Theme changes
-        document.body.classList.remove("dark");
+        document.getElementById('colorMode-moon').src= 'img/moonDark.svg';
+        document.getElementById('colorMode-sun').src= 'img/sunDark.svg';
         document.body.classList.remove("light");
         document.getElementById("logo").src="img/accusonus.svg";
         if (wavesurfer){
@@ -1554,32 +1483,26 @@ function setColorMode(mode) {
             wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color"));
         }
 
-        document.getElementById("marker-number").classList.remove("dark");
         document.getElementById("marker-number").classList.remove("light");
         var but = document.getElementsByClassName("button");
         var i;
         for (i = 0; i < but.length; i++) {
-            but[i].classList.remove("dark");
             but[i].classList.remove("light");
         }
         var drop = document.getElementsByClassName("dropdown");
         for (i = 0; i < drop.length; i++) {
-            drop[i].classList.remove("dark");
             drop[i].classList.remove("light");
         }
         var dropOpt = document.getElementsByClassName("dropdown-options");
         for (i = 0; i < dropOpt.length; i++) {
-            dropOpt[i].classList.remove("dark");
             dropOpt[i].classList.remove("light");
         }
         var dropArr = document.getElementsByClassName("dropdown-arrow");
         for (i = 0; i < dropArr.length; i++) {
-            dropArr[i].classList.remove("dark");
             dropArr[i].classList.remove("light");
         }
         var modalCon = document.getElementsByClassName("modal-content");
         for (i = 0; i < modalCon.length; i++) {
-            modalCon[i].classList.remove("dark");
             modalCon[i].classList.remove("light");
         }
     }
