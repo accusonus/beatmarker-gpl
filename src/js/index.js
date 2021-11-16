@@ -1438,8 +1438,6 @@ function setColorMode() {
         colorLabel.classList.add('colorMode-switch-checked');
 
         // Theme changes
-        document.getElementById('colorMode-moon').src= 'img/moonLight.svg';
-        document.getElementById('colorMode-sun').src= 'img/sunLight.svg';
         document.body.classList.add("light");
         document.getElementById("logo").src="img/accusonusBlack.svg";
         if (wavesurfer){
@@ -1473,8 +1471,6 @@ function setColorMode() {
     }
     else {
         // Theme changes
-        document.getElementById('colorMode-moon').src= 'img/moonDark.svg';
-        document.getElementById('colorMode-sun').src= 'img/sunDark.svg';
         document.body.classList.remove("light");
         document.getElementById("logo").src="img/accusonus.svg";
         if (wavesurfer){
