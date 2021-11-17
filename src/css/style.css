@@ -315,7 +315,6 @@ button:disabled:hover {
 }
 
 .dropzone.light {
-  border: 1px dashed var(--ui-dim-color-light);
   color: var(--ui-dim-color-light);
 }
 
@@ -341,8 +340,20 @@ button:disabled:hover {
   color: var(--text-color);
 }
 
+.dropzone.full.light {
+  color: var(--text-color-light)
+}
+
+.dropzone.light #waveform {
+  fill: var(--ui-dim-color-light)
+}
+
 .dropzone.full #waveform {
   fill: var(--text-color);
+}
+
+.dropzone.full.light #waveform {
+  fill: var(--text-color-light)
 }
 
 #logo {
@@ -471,6 +482,10 @@ hr{
 	cursor: pointer;
 	border-radius: 2px;
 	background-color: #454545;
+}
+
+.light .dropdown-option:not(.disabled):hover {
+  background-color: #C7C7C7;
 }
 
 .dropdown-option.disabled {

@@ -533,13 +533,13 @@ function importFile(file, type)
 
     if(type == "Project"){
         // Show the imported file on Dropdown button
-        document.querySelector(".dropzone").classList = "dropzone";
+        document.querySelector(".dropzone").classList.remove("full");
         document.querySelector(".dropzone p").innerHTML="Drag Audio File Here";
         document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue("--text-color");
     }
     else {
         // Show the imported file on the dragzone
-        document.querySelector(".dropzone").classList = "dropzone full";
+        document.querySelector(".dropzone").classList.add("full");
         document.querySelector(".dropzone p").innerHTML = window.audioFile.fileName;
 
         var selected = document.querySelector("#file-dropdown .selected");
@@ -1456,7 +1456,7 @@ function setColorMode() {
         for ( i = 0; i < wave.length; i++) {
             wave[i].classList.add("light");
         }
-        var dropZ = document.getElementsByClassName("dropzone ");
+        var dropZ = document.getElementsByClassName("dropzone");
         for ( i = 0; i < dropZ.length; i++) {
             dropZ[i].classList.add("light");
         }
@@ -1500,6 +1500,10 @@ function setColorMode() {
         var i;
         for (i = 0; i < but.length; i++) {
             but[i].classList.remove("light");
+        }
+        var dropZ = document.getElementsByClassName("dropzone ");
+        for ( i = 0; i < dropZ.length; i++) {
+            dropZ[i].classList.remove("light");
         }
         var drop = document.getElementsByClassName("dropdown");
         for (i = 0; i < drop.length; i++) {
