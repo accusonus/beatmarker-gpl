@@ -42,23 +42,51 @@
 }
 
 :root {
+  /* Default Colors */
   --bg-color: #1C1B1B;
   --text-color: #A2A2A2;
   --ui-dim-color: #4B4B4B;
   --accent-color: #2680EB;
+  --disabled-bd: #2c2c2c;
+  --disabled-color: #5c5c5c;
+  --active-bd: #c8c8c8;
+  --wavecolor-color: #a2a2a2;
+  --progresscolor-color: #f2a2a2;
+  --cursorcolor-color: #000000;
+  --barscolor-color: #F2383E;
+  --selected-marker-color: #2D8CEB;
+  --available-marker-color: #454545;
+  /* Light Mode Colors */
+  --bg-color-light: #FFFFFF;
+  --text-color-light: #212121;
+  --ui-dim-color-light: #D8D8D8;
+  --accent-color-light: #1473E6;
+  --disabled-bd-light: #BCBCBC;
+  --disabled-color-light: #969696;
+  --active-bd-light: #1473E6;
+  --wavecolor-color-light: #434343;
+  --progresscolor-color-light: #212121;
+  --cursorcolor-color-light: #C6C6C6;
+  --barscolor-color-light: #1473E6;
+  --selected-marker-color-light: #2D8CEB;
+  --available-marker-color-light: #C7C7C7;
 }
 
 body, .button {
   font-size: 14px;
   background-color: var(--bg-color);
-  color: var(--text-color);
+}
+
+body.light{
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
 }
 
 body {
   font-family: 'AdobeClean-Regular';
   user-select: none;
-  margin-left: 0;
   overflow: hidden;
+  color: var(--text-color);
 }
 
 a {
@@ -106,12 +134,10 @@ wave{
 #master-panel {
   padding-bottom: 20px;
   padding-top: 10px;
-  padding-left: 16px;
   height: 84vh;
 }
 
 #extension-panel {
-  padding-right: 15px;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -125,11 +151,18 @@ wave{
 .button {
   font-family: 'AdobeClean-Bold';
   width: 140px;
-  border: 2px solid var(--text-color);
+  border: 2px solid var(--active-bd);
   padding: 6px 0;
   border-radius: 40px;
   outline: none;
   transition: all 130ms;
+  color: var(--text-color);
+}
+
+.button.light {
+  background-color: var(--bg-color-light);
+  border: 2px solid var(--active-bd-light);
+  color: var(--active-bd-light);
 }
 
 .cellar-panel-btn {
@@ -142,22 +175,40 @@ wave{
   background-color: var(--text-color);
 }
 
-.button:active {
-  border-color: #c8c8c8;
-  color: var(--bg-color);
-  background-color: #c8c8c8;
+.button.light:hover {
+  color: var(--bg-color-light);
+  background-color: var(--active-bd-light);
+}
 
+.button:active {
+  border-color: var(--active-bd);
+  color: var(--bg-color);
+  background-color: var(--active-bd);
+}
+
+.button.light:active {
+  background-color: var(--active-bd-light);
+  border-color: var(--active-bd-light);
 }
 
 .button:disabled {
-  background-color: #2c2c2c;
+  background-color: var(--disabled-bd);
   border: none;
   margin-top: 3px;
-  color:#5c5c5c;
+  color: var(--disabled-color);
+}
+
+.button.light:disabled {
+  background-color: var(--disabled-bd-light);
+  color: var(--disabled-color-light);
 }
 
 button:disabled:hover {
-  color: #5c5c5c;
+  color: var(--disabled-color);
+}
+
+.button.light:disabled:hover {
+  color: var(--disabled-color-light);
 }
 
 .play-button {
@@ -219,6 +270,8 @@ button:disabled:hover {
 #import-panel {
   display: flex;
   flex-direction: row;
+  width: 100%;
+  justify-content: center;
 }
 
 #functionality-panel {
@@ -226,6 +279,8 @@ button:disabled:hover {
   display: flex;
   flex-direction: column;
   align-items: center;
+  width: 100%;
+  justify-content: center;
 }
 
 #functionality-panel > div {
@@ -239,10 +294,6 @@ button:disabled:hover {
   width: 203px;
   height: 174px;
   margin: 5px 2px 0 0 ;
-}
-
-#files-container {
-  padding-right: 16px;
 }
 
 .box-container {
@@ -263,6 +314,11 @@ button:disabled:hover {
   margin-top: 2px;
 }
 
+.dropzone.light {
+  color: var(--ui-dim-color-light);
+}
+
+
 .dropzone p {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -271,7 +327,6 @@ button:disabled:hover {
 }
 
 .dragover .dropzone {
-
   border-color: black;
   color: black;
   background-color: var(--ui-dim-color);
@@ -285,18 +340,31 @@ button:disabled:hover {
   color: var(--text-color);
 }
 
+.dropzone.full.light {
+  color: var(--text-color-light)
+}
+
+.dropzone.light #waveform {
+  fill: var(--ui-dim-color-light)
+}
+
 .dropzone.full #waveform {
   fill: var(--text-color);
 }
 
+.dropzone.full.light #waveform {
+  fill: var(--text-color-light)
+}
+
 #logo {
+  margin-left: 15px;
   cursor: pointer;
 }
 
 hr{
   height: 1px;
   border: none;
-  background-color: #2C2C2C;
+  background-color: var(--disabled-bd);
 }
 
 #marker-number {
@@ -311,8 +379,17 @@ hr{
   pointer-events: none;
 }
 
-#marker-number ::placeholder {
+#marker-number::placeholder {
   color: var(--accent-color);
+}
+
+#marker-number.light {
+  background-color: var(--bg-color-light);
+  color: var(--accent-color-light);
+}
+
+#marker-number.light::placeholder {
+  color: var(--accent-color-light);
 }
 
 .dropdown {
@@ -324,6 +401,12 @@ hr{
 	border: 1px solid var(--ui-dim-color);
 	border-radius: 2px;
 	align-items: center;
+}
+
+.dropdown.light {
+  background-color: var(--bg-color-light);
+  color: var(--text-color-light);
+	border: 1px solid var(--text-color-light);
 }
 
 .dropdown-current {
@@ -345,6 +428,10 @@ hr{
 	background-color: var(--text-color);
 	clip-path: polygon(15% 20%, 0 35%, 50% 85%, 100% 35%, 85% 20%, 50% 55%);
 	transition: 200ms ease-in-out;
+}
+
+.dropdown-arrow.light {
+  background-color: var(--text-color-light);
 }
 
 .open .dropdown-arrow {
@@ -369,6 +456,10 @@ hr{
 	z-index: 2;
 }
 
+.dropdown-options.light {
+  background-color: var(--bg-color-light);
+}
+
 .dropdown.open .dropdown-options {
 	opacity: 1;
 	visibility: visible;
@@ -391,6 +482,10 @@ hr{
 	cursor: pointer;
 	border-radius: 2px;
 	background-color: #454545;
+}
+
+.light .dropdown-option:not(.disabled):hover {
+  background-color: #C7C7C7;
 }
 
 .dropdown-option.disabled {
@@ -473,13 +568,18 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .bottom_bar {
-  background-color: rgb(13, 14, 17);
+  background-color: var(--bg-color);
   width: 100%;
   text-align: right;
   height: 20px;
   bottom:0;
+  right: 0;
   position: fixed;
   z-index: 10;
+}
+
+.bottom_bar.light {
+  background-color: var(--text-color-light);
 }
 
 #licenser-btn {
@@ -551,6 +651,11 @@ input[type=number]::-webkit-outer-spin-button {
   border: 1px solid var(--ui-dim-color);
   padding: 20px 25px;
   overflow-y: auto;
+}
+
+.modal-content.light {
+  background-color: var(--bg-color-light);
+  border: 1px solid var(--ui-dim-color-light);
 }
 
 #loading-modal {
@@ -627,10 +732,6 @@ input[type=number]::-webkit-outer-spin-button {
   font-family: 'Mulish';
   padding-bottom: 10px;
   text-align: center;
-}
-
-.menu-link:last-child {
-  padding-bottom: 60px;
 }
 
 .side-menu-close-btn {
@@ -871,13 +972,13 @@ input[type=number]::-webkit-outer-spin-button {
   margin-right: 5px;
 }
 
-#privacy-policy a{
+#privacy-policy a {
   color: rgb(255, 255, 255);
   position: relative;
   transition: 300ms ease-in-out;
 }
 
-#privacy-policy a:after{
+#privacy-policy a:after {
   position: absolute;
   content: '';
   height: 1px;
@@ -891,15 +992,67 @@ input[type=number]::-webkit-outer-spin-button {
   transition: 300ms ease-in-out;
 }
 
-#privacy-policy a:hover{
+#privacy-policy a:hover {
   color: rgb(255, 255, 255, .8);
 }
 
-#privacy-policy a:hover:after{
+#privacy-policy a:hover:after {
   opacity: 0;
 }
 
-#privacy-policy-checkbox{
+#privacy-policy-checkbox {
   width: 24px;
   height: 24px;
+}
+
+#colorMode-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 21px;
+  border-radius: 21px;
+  background-color: #1473E6;
+  cursor: pointer;
+  transition: all .3s;
+  overflow: hidden;
+  box-shadow: 0px 0px 2px rgba(0,0,0, .3);
+}
+
+#colorMode-switch input {
+  display: none;
+}
+
+#colorMode-switch input:checked + div {
+  left: calc(50px - 20px);
+  box-shadow: 0px 0px 0px white;
+}
+
+#colorMode-switch div {
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  border-radius: 15px;
+  background-color: white;
+  top: 3px;
+  left: 5px;
+  box-shadow: 0px 0px 1px rgb(150,150,150);
+  transition: all .3s;
+}
+
+.colormodeContainer {
+  display: flex;
+  padding: 0px 10px;
+  position: absolute;
+  right: 0;
+  bottom: 30px;
+}
+
+#colorMode-moon, #colorMode-sun {
+  padding: 0px 5px;
+  width: 15px;
+  height: 21px;
+}
+
+.wavesurfer-handle.light {
+  background: var(--barscolor-color-light) !important;
 }

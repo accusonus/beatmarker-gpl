@@ -23,8 +23,13 @@ document.addEventListener('DOMContentLoaded', function(e) {
         if (localStorage.getItem("privacy") === null) {
             localStorage.setItem("privacy", "true");
         }
+
+        if (localStorage.getItem("colorMode") === null) {
+            localStorage.setItem("colorMode", "Default");
+        }
     }
 
+    // Initial value of privacy checkbox
     var checkBox = document.getElementById("privacy-policy-checkbox");
 
     if (localStorage.getItem("privacy") === "true"){
@@ -34,6 +39,7 @@ document.addEventListener('DOMContentLoaded', function(e) {
         checkBox.checked = false;
     }
 
+    themeInit();
     statusUser();
 });
 
@@ -527,13 +533,13 @@ function importFile(file, type)
 
     if(type == "Project"){
         // Show the imported file on Dropdown button
-        document.querySelector(".dropzone").classList = "dropzone";
+        document.querySelector(".dropzone").classList.remove("full");
         document.querySelector(".dropzone p").innerHTML="Drag Audio File Here";
         document.querySelector("#file-dropdown .dropdown-current span").style = "color: " + theme.getPropertyValue("--text-color");
     }
     else {
         // Show the imported file on the dragzone
-        document.querySelector(".dropzone").classList = "dropzone full";
+        document.querySelector(".dropzone").classList.add("full");
         document.querySelector(".dropzone p").innerHTML = window.audioFile.fileName;
 
         var selected = document.querySelector("#file-dropdown .selected");
@@ -697,11 +703,17 @@ function updateSelectedMarkers(){
 function showSelectedMarkers(){
     var availableMarkers = document.querySelectorAll("wave marker");
     var selectedMarkers = document.querySelectorAll("wave marker:nth-child(-n +" + (window.selectedBeats.length + 3) + ")");
+    var availableMarkerscolor = theme.getPropertyValue("--available-marker-color");
+    var selectedMarkerscolor = theme.getPropertyValue("--selected-marker-color");
+    if (localStorage.getItem("colorMode") === "Light"){
+        availableMarkerscolor = theme.getPropertyValue("--available-marker-color-light");
+        selectedMarkerscolor = theme.getPropertyValue("--selected-marker-color-light");
+    }
     for(marker of availableMarkers){
-        marker.querySelector("div").style.background = "#454545";
+        marker.querySelector("div").style.background = availableMarkerscolor;
     }
     for(marker of selectedMarkers){
-        marker.querySelector("div").style.background = '#2D8CEB';
+        marker.querySelector("div").style.background = selectedMarkerscolor;
     }
 }
 
@@ -786,12 +798,19 @@ function onLoad() {
     if (!fs.existsSync(window.outputDir)) {
         fs.mkdir(window.outputDir, { recursive : true }, (err) => {if (err) throw err;});
     }
+
+    var wavecolor = theme.getPropertyValue("--wavecolor-color");
+    var progresscolor = theme.getPropertyValue("--progresscolor-color");
+    var cursorcolor = theme.getPropertyValue("--cursorcolor-color");
+    if (localStorage.getItem("colorMode") === "Light"){
+        progresscolor = theme.getPropertyValue("--progresscolor-color-light");
+    }
     // load wavesurfer
     wavesurfer = WaveSurfer.create({
         container: '#wavesurfer',
-        waveColor: '#a2a2a233',
-        progressColor: '#f2a2a2',
-        cursorColor: '#00000000',
+        waveColor: wavecolor,
+        progressColor: progresscolor,
+        cursorColor: cursorcolor,
         barGap: 2,
         barWidth: 2,
         barRadius: 2,
@@ -880,11 +899,12 @@ function loadWaveform(){
         // For min zoom set overflow to visible so that handles show correctly
         document.querySelector("wave").style.overflow = "visible";
         // Add active region from track start to track end
+        var barscolor = theme.getPropertyValue("--barscolor-color");
         wavesurfer.clearRegions();
         let handleStyleParams = {
             width: '3px',
             cursor: 'col-resize',
-            backgroundColor: '#eb2d5d'
+            backgroundColor: barscolor
         }
         window.region = wavesurfer.addRegion({
             start: 0,
@@ -897,9 +917,17 @@ function loadWaveform(){
             }
         });
     })
+
+    var wavecolor = theme.getPropertyValue("--wavecolor-color");
+    var cursorcolor = theme.getPropertyValue("--cursorcolor-color");
+    if (localStorage.getItem("colorMode") === "Light"){
+        wavecolor = theme.getPropertyValue("--wavecolor-color-light");
+        cursorcolor = theme.getPropertyValue("--cursorcolor-color-light");
+    }
     // Clear any previous markers
     wavesurfer.markers.clear();
-    wavesurfer.setWaveColor(theme.getPropertyValue("--text-color"));
+    wavesurfer.setWaveColor(wavecolor);
+    wavesurfer.setCursorColor(cursorcolor);
     // Clear placeholder text
     var overlay = document.querySelector("#wavesurfer-overlay");
     overlay.querySelector("span").textContent="";
@@ -1390,6 +1418,112 @@ function setPrivacy() {
   }
 }
 
+function setColorMode() {
+    var colorLabel = document.getElementById('colorMode-switch');
+    var colorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
+    if (colorInput.checked == true){
+        colorLabel.classList.add('colorMode-switch-checked');
+        localStorage.setItem("colorMode", "Light");
+    }
+    else {
+        colorLabel.classList.remove('colorMode-switch-checked');
+        localStorage.setItem("colorMode", "Default");
+    }
+    themeInit();
+  }
+
+  function themeInit(){
+    // Initial value of color mode
+    var checkBoxcolorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
+    showSelectedMarkers();
+    if (localStorage.getItem("colorMode") === "Light"){
+        var colorLabel = document.getElementById('colorMode-switch');
+        checkBoxcolorInput.checked = true;
+        colorLabel.classList.add('colorMode-switch-checked');
+
+        // Theme changes
+        document.body.classList.add("light");
+        document.getElementById("logo").src="img/accusonusBlack.svg";
+        if (wavesurfer){
+            wavesurfer.setWaveColor(theme.getPropertyValue("--wavecolor-color-light"));
+            wavesurfer.setProgressColor(theme.getPropertyValue("--progresscolor-color-light"));
+            wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color-light"));
+        }
+        document.getElementById("marker-number").classList.add("light");
+        var i;
+
+        var wave = document.getElementsByClassName("wavesurfer-handle");
+        for ( i = 0; i < wave.length; i++) {
+            wave[i].classList.add("light");
+        }
+        var dropZ = document.getElementsByClassName("dropzone");
+        for ( i = 0; i < dropZ.length; i++) {
+            dropZ[i].classList.add("light");
+        }
+        var but = document.getElementsByClassName("button");
+        for ( i = 0; i < but.length; i++) {
+            but[i].classList.add("light");
+        }
+        var drop = document.getElementsByClassName("dropdown");
+        for (i = 0; i < drop.length; i++) {
+            drop[i].classList.add("light");
+        }
+        var dropOpt = document.getElementsByClassName("dropdown-options");
+        for (i = 0; i < dropOpt.length; i++) {
+            dropOpt[i].classList.add("light");
+        }
+        var dropArr = document.getElementsByClassName("dropdown-arrow");
+        for (i = 0; i < dropArr.length; i++) {
+            dropArr[i].classList.add("light");
+        }
+        var modalCon = document.getElementsByClassName("modal-content");
+        for (i = 0; i < modalCon.length; i++) {
+            modalCon[i].classList.add("light");
+        }
+    }
+    else {
+        // Theme changes
+        document.body.classList.remove("light");
+        document.getElementById("logo").src="img/accusonus.svg";
+        if (wavesurfer){
+            wavesurfer.setWaveColor(theme.getPropertyValue("--wavecolor-color"));
+            wavesurfer.setProgressColor(theme.getPropertyValue("--progresscolor-color"));
+            wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color"));
+        }
+
+        var wave = document.getElementsByClassName("wavesurfer-handle");
+        for ( i = 0; i < wave.length; i++) {
+            wave[i].classList.remove("light");
+        }
+        document.getElementById("marker-number").classList.remove("light");
+        var but = document.getElementsByClassName("button");
+        var i;
+        for (i = 0; i < but.length; i++) {
+            but[i].classList.remove("light");
+        }
+        var dropZ = document.getElementsByClassName("dropzone ");
+        for ( i = 0; i < dropZ.length; i++) {
+            dropZ[i].classList.remove("light");
+        }
+        var drop = document.getElementsByClassName("dropdown");
+        for (i = 0; i < drop.length; i++) {
+            drop[i].classList.remove("light");
+        }
+        var dropOpt = document.getElementsByClassName("dropdown-options");
+        for (i = 0; i < dropOpt.length; i++) {
+            dropOpt[i].classList.remove("light");
+        }
+        var dropArr = document.getElementsByClassName("dropdown-arrow");
+        for (i = 0; i < dropArr.length; i++) {
+            dropArr[i].classList.remove("light");
+        }
+        var modalCon = document.getElementsByClassName("modal-content");
+        for (i = 0; i < modalCon.length; i++) {
+            modalCon[i].classList.remove("light");
+        }
+    }
+  }
+  
 /*
  * Api calls
 */

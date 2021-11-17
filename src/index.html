@@ -212,6 +212,7 @@
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://account.accusonus.com/profile')">My account</a></div>
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/store')">Upgrade</a></div>
 			<div class="menu-link"><a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/')">Visit accusonus.com</a></div>
+
 			<div id="privacy-policy" class="menu-link">
 				<div>
 					<input type="checkbox" id="privacy-policy-checkbox" onclick="setPrivacy()">
@@ -223,6 +224,17 @@
 				</div>
 			</div>
 			<div class="menu-link"><a href="#" onclick="logoutUser()">Log out</a></div>
+
+			<div class="menu-link">
+				<div class="colormodeContainer">
+					<img id="colorMode-moon" src="img/moonDark.svg" draggable="false">
+					<label id="colorMode-switch" >
+						<input type="checkbox" onclick="setColorMode()"/>
+						<div></div>
+					</label>
+					<img id="colorMode-sun" src="img/sunDark.svg" draggable="false">
+				</div>
+			</div>
 		</div>
 	</div>
 	</body>	
