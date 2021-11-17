@@ -703,11 +703,17 @@ function updateSelectedMarkers(){
 function showSelectedMarkers(){
     var availableMarkers = document.querySelectorAll("wave marker");
     var selectedMarkers = document.querySelectorAll("wave marker:nth-child(-n +" + (window.selectedBeats.length + 3) + ")");
+    var availableMarkerscolor = theme.getPropertyValue("--available-marker-color");
+    var selectedMarkerscolor = theme.getPropertyValue("--selected-marker-color");
+    if (localStorage.getItem("colorMode") === "Light"){
+        availableMarkerscolor = theme.getPropertyValue("--available-marker-color-light");
+        selectedMarkerscolor = theme.getPropertyValue("--selected-marker-color-light");
+    }
     for(marker of availableMarkers){
-        marker.querySelector("div").style.background = "#454545";
+        marker.querySelector("div").style.background = availableMarkerscolor;
     }
     for(marker of selectedMarkers){
-        marker.querySelector("div").style.background = '#2D8CEB';
+        marker.querySelector("div").style.background = selectedMarkerscolor;
     }
 }
 
@@ -1429,6 +1435,7 @@ function setColorMode() {
   function themeInit(){
     // Initial value of color mode
     var checkBoxcolorInput = document.getElementById('colorMode-switch').getElementsByTagName( 'input' )[0];
+    showSelectedMarkers();
     if (localStorage.getItem("colorMode") === "Light"){
         var colorLabel = document.getElementById('colorMode-switch');
         checkBoxcolorInput.checked = true;

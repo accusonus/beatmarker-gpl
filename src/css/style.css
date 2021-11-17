@@ -54,6 +54,8 @@
   --progresscolor-color: #f2a2a2;
   --cursorcolor-color: #000000;
   --barscolor-color: #F2383E;
+  --selected-marker-color: #2D8CEB;
+  --available-marker-color: #454545;
   /* Light Mode Colors */
   --bg-color-light: #FFFFFF;
   --text-color-light: #212121;
@@ -62,10 +64,12 @@
   --disabled-bd-light: #BCBCBC;
   --disabled-color-light: #969696;
   --active-bd-light: #1473E6;
-  --wavecolor-color-light: #949494;
+  --wavecolor-color-light: #434343;
   --progresscolor-color-light: #212121;
   --cursorcolor-color-light: #C6C6C6;
   --barscolor-color-light: #1473E6;
+  --selected-marker-color-light: #2D8CEB;
+  --available-marker-color-light: #C7C7C7;
 }
 
 body, .button {
