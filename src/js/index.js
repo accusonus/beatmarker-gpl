@@ -1449,14 +1449,18 @@ function setColorMode() {
             wavesurfer.setProgressColor(theme.getPropertyValue("--progresscolor-color-light"));
             wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color-light"));
         }
+        document.getElementById("marker-number").classList.add("light");
+        var i;
 
         var wave = document.getElementsByClassName("wavesurfer-handle");
         for ( i = 0; i < wave.length; i++) {
             wave[i].classList.add("light");
         }
-        document.getElementById("marker-number").classList.add("light");
+        var dropZ = document.getElementsByClassName("dropzone ");
+        for ( i = 0; i < dropZ.length; i++) {
+            dropZ[i].classList.add("light");
+        }
         var but = document.getElementsByClassName("button");
-        var i;
         for ( i = 0; i < but.length; i++) {
             but[i].classList.add("light");
         }

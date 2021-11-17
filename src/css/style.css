@@ -314,6 +314,12 @@ button:disabled:hover {
   margin-top: 2px;
 }
 
+.dropzone.light {
+  border: 1px dashed var(--ui-dim-color-light);
+  color: var(--ui-dim-color-light);
+}
+
+
 .dropzone p {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -322,7 +328,6 @@ button:disabled:hover {
 }
 
 .dragover .dropzone {
-
   border-color: black;
   color: black;
   background-color: var(--ui-dim-color);
