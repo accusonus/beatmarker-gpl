@@ -21,7 +21,12 @@
 document.addEventListener('DOMContentLoaded', function(e) {
     if (typeof(Storage) !== "undefined") {
         if (localStorage.getItem("privacy") === null) {
-            localStorage.setItem("privacy", "true");
+            if (consentRequired()){
+                localStorage.setItem("privacy", "false");
+            }
+            else{
+                localStorage.setItem("privacy", "true");
+            }
         }
 
         if (localStorage.getItem("colorMode") === null) {
@@ -31,12 +36,18 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     // Initial value of privacy checkbox
     var checkBox = document.getElementById("privacy-policy-checkbox");
+    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
     if (localStorage.getItem("privacy") === "true"){
         checkBox.checked = true;
+        checkBoxRegister = true;
+        checkBoxLogin = true;
     }
     else {
         checkBox.checked = false;
+        checkBoxRegister = false;
+        checkBoxLogin = false;
     }
 
     themeInit();
@@ -1913,4 +1924,82 @@ function musicCellarLinkTrack(){
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(musicCellarLinkObject);
+}
+
+function consentRequired() {
+    var utc = dayjs.extend(window.dayjs_plugin_utc);
+    var timezone = dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    const tz = dayjs.tz.guess();
+    switch (tz) {
+      case 'Europe/Vienna':
+        return true;
+      case 'Europe/Brussels':
+        return true;
+      case 'Europe/Sofia':
+        return true;
+      case 'Europe/Zagreb':
+        return true;
+      case 'Asia/Famagusta':
+        return true;
+      case 'Asia/Nicosia':
+        return true;
+      case 'Europe/Prague':
+        return true;
+      case 'Europe/Copenhagen':
+        return true;
+      case 'Europe/Tallinn':
+        return true;
+      case 'Europe/Helsinki':
+        return true;
+      case 'Europe/Paris':
+        return true;
+      case 'Europe/Berlin':
+        return true;
+      case 'Europe/Busingen':
+        return true;
+      case 'Europe/Athens':
+        return true;
+      case 'Europe/Budapest':
+        return true;
+      case 'Europe/Dublin':
+        return true;
+      case 'Europe/Rome':
+        return true;
+      case 'Europe/Riga':
+        return true;
+      case 'Europe/Vilnius':
+        return true;
+      case 'Europe/Luxembourg':
+        return true;
+      case 'Europe/Malta':
+        return true;
+      case 'Europe/Amsterdam':
+        return true;
+      case 'Europe/Warsaw':
+        return true;
+      case 'Atlantic/Azores':
+        return true;
+      case 'Atlantic/Madeira':
+        return true;
+      case 'Europe/Lisbon':
+        return true;
+      case 'Europe/Bucharest':
+        return true;
+      case 'Europe/Bratislava':
+        return true;
+      case 'Europe/Ljubljana':
+        return true;
+      case 'Africa/Ceuta':
+        return true;
+      case 'Atlantic/Canary':
+        return true;
+      case 'Europe/Madrid':
+        return true;
+      case 'Europe/Stockholm':
+        return true;
+      default:
+        return false;
+    }
 }
