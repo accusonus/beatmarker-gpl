@@ -911,6 +911,9 @@ function loadWaveform(){
         document.querySelector("wave").style.overflow = "visible";
         // Add active region from track start to track end
         var barscolor = theme.getPropertyValue("--barscolor-color");
+        if (localStorage.getItem("colorMode") === "Light"){
+            barscolor = theme.getPropertyValue("--barscolor-color-light");
+        }
         wavesurfer.clearRegions();
         let handleStyleParams = {
             width: '3px',
@@ -1461,6 +1464,7 @@ function setColorMode() {
             wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color-light"));
         }
         document.getElementById("marker-number").classList.add("light");
+        document.getElementById("wavesurfer-overlay").classList.add("light");
         var i;
 
         var wave = document.getElementsByClassName("wavesurfer-handle");
@@ -1507,6 +1511,8 @@ function setColorMode() {
             wave[i].classList.remove("light");
         }
         document.getElementById("marker-number").classList.remove("light");
+        document.getElementById("wavesurfer-overlay").classList.remove("light");
+
         var but = document.getElementsByClassName("button");
         var i;
         for (i = 0; i < but.length; i++) {
