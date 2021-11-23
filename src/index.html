@@ -29,6 +29,10 @@
 		<link rel="stylesheet" type="text/css" href="css/style.css">
 		<script src="js/gaua.js"></script>
 		<script src="js/version.js"></script>
+		<script src="js/dayjs/dayjs.min.js"></script>
+		<script src="js/dayjs/utc.js"></script>
+		<script src="js/dayjs/timezone.js"></script>
+		<script src="js/europeanUnion.js"></script>
 		<script src="js/index.js"></script>
 		<script src="./lib/CSInterface.js"></script>
 		<script src="./lib/wavesurfer.min.js"></script>
@@ -155,15 +159,25 @@
 			<div class="accusonus-logo"><img src="img/accusonusBlack.svg" draggable="false"></div>
 			<div class="register-form">
 				<div class="form-title bold">Create your free account to get started</div>
-				<div id="register-subtitle" class="form-title margin-bot-25">Enter your details below</div>
+				<div id="register-subtitle" class="form-title">Enter your details below</div>
 				<div id="register-messages" class="form-messages"></div>
 				<div class="form-label">Email address</div>
 				<div class="form-input"><input type="text" id="regfusername" name="regfusername" placeholder="*Your email"></div>
 				<div class="form-label">Password</div>
 				<div class="form-input"><input type="password" id="regfpassword" name="regfpassword" placeholder="*Your password"></div>
-				<button class="form-button margin-bot-25" onclick="submitForm('Register')">Create new account</button>
-				<div class="form-text text-right margin-bot-25">Already an accusonus member? <a href="#" onclick="changeForm('Login')">Login</a></div>
-				<div class="form-text">An accusonus account will be created, a confirmation email will be sent and you will be subscribed to our newsletter. The accusonus account is required to start a free trial. By clicking "Create new account" you agree to accusonus' <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/general-terms')">Terms of Use</a> and <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/privacy-policy')">Privacy Policy</a>.</div>
+				<button class="form-button margin-bot-5" onclick="submitForm('Register')">Create new account</button>
+				<div class="form-text text-right margin-bot-10">Already an accusonus member? <a href="#" onclick="changeForm('Login')">Login</a></div>
+				<div class="form-text-policy margin-bot-10">An accusonus account will be created, a confirmation email will be sent and you will be subscribed to our newsletter. The accusonus account is required to start a free trial. By clicking "Create new account" you agree to accusonus' <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/general-terms')">Terms of Use</a> and <a href="#" onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/legal/privacy-policy')">Privacy Policy</a>.</div>
+				<div id="privacy-policy-form" class="form-text-policy">
+					<div>
+						<input type="checkbox" id="privacy-policy-form-checkbox-login" onclick="setPrivacy()">
+					</div>
+					<div>
+						By agreeing to send anonymous usage data, you are helping us improve our products!
+						You can read our
+						<a onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/content/privacy-policy')" href="#">Privacy Policy</a>.
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="login-screen" class="register-login-ins modal">
@@ -181,6 +195,16 @@
 				</div>
 				<button class="form-button margin-bot-25" onclick="submitForm('Login')">Login</button>
 				<div class="form-text text-right margin-bot-25">Don’t have an account? <a href="#" onclick="changeForm('Register')">Sign up now</a></div>
+				<div id="privacy-policy-form" class="form-text">
+					<div>
+						<input type="checkbox" id="privacy-policy-form-checkbox-register" onclick="setPrivacy()">
+					</div>
+					<div>
+						By agreeing to send anonymous usage data, you are helping us improve our products!
+						You can read our
+						<a onclick="window.cep.util.openURLInDefaultBrowser('https://accusonus.com/content/privacy-policy')" href="#">Privacy Policy</a>.
+					</div>
+				</div>
 			</div>
 		</div>
 		<div id="resetpass-screen" class="register-login-ins modal">

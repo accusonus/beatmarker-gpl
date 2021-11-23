@@ -57,19 +57,20 @@
   --selected-marker-color: #2D8CEB;
   --available-marker-color: #454545;
   /* Light Mode Colors */
-  --bg-color-light: #FFFFFF;
-  --text-color-light: #212121;
-  --ui-dim-color-light: #D8D8D8;
+  --bg-color-light: #F0F0F0;
+  --text-color-light: #595959;
+  --ui-dim-color-light: #BCBCBC;
   --accent-color-light: #1473E6;
   --disabled-bd-light: #BCBCBC;
-  --disabled-color-light: #969696;
-  --active-bd-light: #1473E6;
+  --disabled-color-light: #949494;
+  --active-bd-light: #949494;
   --wavecolor-color-light: #434343;
   --progresscolor-color-light: #212121;
   --cursorcolor-color-light: #C6C6C6;
   --barscolor-color-light: #1473E6;
   --selected-marker-color-light: #2D8CEB;
   --available-marker-color-light: #C7C7C7;
+  --drop-bg-color-light: #D8D8D8;
 }
 
 body, .button {
@@ -129,6 +130,10 @@ wave{
   z-index: 3;
   width: 100%;
   text-align: center;
+}
+
+#wavesurfer-overlay.light {
+  color: var(--text-color-light);
 }
 
 #master-panel {
@@ -304,6 +309,10 @@ button:disabled:hover {
   text-align: center;
 }
 
+.box-container {
+  border: 1px solid var(--ui-dim-color-light);
+}
+
 .dropzone {
   flex: 1;
   border: 1px dashed var(--ui-dim-color);
@@ -315,7 +324,8 @@ button:disabled:hover {
 }
 
 .dropzone.light {
-  color: var(--ui-dim-color-light);
+  color: var(--text-color-light);
+  border: 1px dashed var(--ui-dim-color-light);
 }
 
 
@@ -345,7 +355,7 @@ button:disabled:hover {
 }
 
 .dropzone.light #waveform {
-  fill: var(--ui-dim-color-light)
+  fill: var(--text-color-light)
 }
 
 .dropzone.full #waveform {
@@ -404,9 +414,9 @@ hr{
 }
 
 .dropdown.light {
-  background-color: var(--bg-color-light);
-  color: var(--text-color-light);
-	border: 1px solid var(--text-color-light);
+  background-color: var(--drop-bg-color-light);
+  color: var(--active-bd-light);
+	border: 1px solid var(--active-bd-light);
 }
 
 .dropdown-current {
@@ -431,7 +441,7 @@ hr{
 }
 
 .dropdown-arrow.light {
-  background-color: var(--text-color-light);
+  background-color: var(--active-bd-light);
 }
 
 .open .dropdown-arrow {
@@ -925,6 +935,13 @@ input[type=number]::-webkit-outer-spin-button {
   color: rgb(148, 148, 148);
 }
 
+.form-text-policy {
+  font-size: 11px;
+  font-family: 'Mulish';
+  color: rgb(148, 148, 148);
+}
+
+
 .text-right {
   text-align: right;
 }
@@ -1003,6 +1020,11 @@ input[type=number]::-webkit-outer-spin-button {
 #privacy-policy-checkbox {
   width: 24px;
   height: 24px;
+}
+
+#privacy-policy-form {
+  display: flex;
+  text-align: left;
 }
 
 #colorMode-switch {

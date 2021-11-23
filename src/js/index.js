@@ -21,7 +21,12 @@
 document.addEventListener('DOMContentLoaded', function(e) {
     if (typeof(Storage) !== "undefined") {
         if (localStorage.getItem("privacy") === null) {
-            localStorage.setItem("privacy", "true");
+            if (consentRequired()){
+                localStorage.setItem("privacy", "false");
+            }
+            else{
+                localStorage.setItem("privacy", "true");
+            }
         }
 
         if (localStorage.getItem("colorMode") === null) {
@@ -31,12 +36,18 @@ document.addEventListener('DOMContentLoaded', function(e) {
 
     // Initial value of privacy checkbox
     var checkBox = document.getElementById("privacy-policy-checkbox");
+    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
     if (localStorage.getItem("privacy") === "true"){
         checkBox.checked = true;
+        checkBoxRegister.checked = true;
+        checkBoxLogin.checked = true;
     }
     else {
         checkBox.checked = false;
+        checkBoxRegister.checked = false;
+        checkBoxLogin.checked = false;
     }
 
     themeInit();
@@ -900,6 +911,9 @@ function loadWaveform(){
         document.querySelector("wave").style.overflow = "visible";
         // Add active region from track start to track end
         var barscolor = theme.getPropertyValue("--barscolor-color");
+        if (localStorage.getItem("colorMode") === "Light"){
+            barscolor = theme.getPropertyValue("--barscolor-color-light");
+        }
         wavesurfer.clearRegions();
         let handleStyleParams = {
             width: '3px',
@@ -1450,6 +1464,7 @@ function setColorMode() {
             wavesurfer.setCursorColor(theme.getPropertyValue("--cursorcolor-color-light"));
         }
         document.getElementById("marker-number").classList.add("light");
+        document.getElementById("wavesurfer-overlay").classList.add("light");
         var i;
 
         var wave = document.getElementsByClassName("wavesurfer-handle");
@@ -1496,6 +1511,8 @@ function setColorMode() {
             wave[i].classList.remove("light");
         }
         document.getElementById("marker-number").classList.remove("light");
+        document.getElementById("wavesurfer-overlay").classList.remove("light");
+
         var but = document.getElementsByClassName("button");
         var i;
         for (i = 0; i < but.length; i++) {
@@ -1913,4 +1930,16 @@ function musicCellarLinkTrack(){
 
     window.dataLayer = window.dataLayer || [];
     window.dataLayer.push(musicCellarLinkObject);
+}
+
+function consentRequired() {
+    var utc = dayjs.extend(window.dayjs_plugin_utc);
+    var timezone = dayjs.extend(window.dayjs_plugin_timezone);
+    dayjs.extend(utc);
+    dayjs.extend(timezone);
+    const tz = dayjs.tz.guess();
+    if (europeanTime.indexOf(tz)) {
+        return true;
+    }
+    return false;
 }
