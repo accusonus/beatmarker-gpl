@@ -1938,7 +1938,7 @@ function consentRequired() {
     dayjs.extend(utc);
     dayjs.extend(timezone);
     const tz = dayjs.tz.guess();
-    if (europeanTime.indexOf(tz)) {
+    if (europeanTime.indexOf(tz) > 0) {
         return true;
     }
     return false;
