@@ -1404,7 +1404,7 @@ function setPrivacy() {
 }
 
 function checkConsent(){
-    if (localStorage.getItem("privacy") === null) {
+    if (localStorage.getItem("privacy") === null || localStorage.getItem("privacy") === 'null') {
         if (consentRequired()){
             localStorage.setItem("privacy", "false");
         }
@@ -1727,7 +1727,7 @@ function acProductLineIntent(userEmail){
 
 // Register - Login - Reset Password
 function formActionTrack(type, userID, userEmail){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
     
     var action, formEvent, isloggedin;
@@ -1771,7 +1771,7 @@ function formActionTrack(type, userID, userEmail){
 
 // PageInfo
 function pageInfoTrack(){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1803,7 +1803,7 @@ function pageInfoTrack(){
 
 // User Notifications
 function userNotificationsTrack(responseCode){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1836,7 +1836,7 @@ function userNotificationsTrack(responseCode){
 
 // Audio Import
 function audioImportTrack(actionType, fileLength){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1869,7 +1869,7 @@ function audioImportTrack(actionType, fileLength){
 
 // Create Markers
 function createMarkersTrack(numberMarkers, fileLength){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1902,7 +1902,7 @@ function createMarkersTrack(numberMarkers, fileLength){
 
 // Music Cellar Link
 function musicCellarLinkTrack(){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
         
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
