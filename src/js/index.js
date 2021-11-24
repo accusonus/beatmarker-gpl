@@ -1394,8 +1394,11 @@ function accountIconShowHide(){
 
 function setPrivacy() {
   var checkBox = document.getElementById("privacy-policy-checkbox");
+  var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+  var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
-  if (checkBox.checked == true){
+
+  if (checkBox.checked == true || checkBoxRegister.checked == true || checkBoxLogin.checked == true){
     localStorage.setItem("privacy", "true");
   }
   else {
