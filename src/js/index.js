@@ -20,34 +20,11 @@
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', function(e) {
     if (typeof(Storage) !== "undefined") {
-        if (localStorage.getItem("privacy") === null) {
-            if (consentRequired()){
-                localStorage.setItem("privacy", "false");
-            }
-            else{
-                localStorage.setItem("privacy", "true");
-            }
-        }
+        checkConsent();
 
         if (localStorage.getItem("colorMode") === null) {
             localStorage.setItem("colorMode", "Default");
         }
-    }
-
-    // Initial value of privacy checkbox
-    var checkBox = document.getElementById("privacy-policy-checkbox");
-    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
-    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
-
-    if (localStorage.getItem("privacy") === "true"){
-        checkBox.checked = true;
-        checkBoxRegister.checked = true;
-        checkBoxLogin.checked = true;
-    }
-    else {
-        checkBox.checked = false;
-        checkBoxRegister.checked = false;
-        checkBoxLogin.checked = false;
     }
 
     themeInit();
@@ -448,9 +425,6 @@ function selectFileFromDropdownHandler()
  */
 function systemImportHandler(ev) 
 {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const reader = new FileReader();
-
     // If the file came from the Drag and Drop event
     if (ev.type == "drop"){
 
@@ -496,31 +470,12 @@ function systemImportHandler(ev)
         }
         // Imported through system
         var file = ev.dataTransfer.files[0];
-        var type = 'Filesystem (Drag & Drop)';
-
-        reader.onload = function(e){
-            const arrayBuffer = e.target.result;
-            audioContext.decodeAudioData(arrayBuffer)
-                .then(function(buffer){
-                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
-                audioImportTrack('Drag & Drop', duration);
-            });
-        };
-        reader.readAsArrayBuffer(file);
+        var type = 'Drag & Drop';
     }
     else{
         // Regular system import
         var file = document.getElementById("file-input").files[0];
-        var type = 'Filesystem (Button)';
-        reader.onload = function(e){
-            const arrayBuffer = e.target.result;
-            audioContext.decodeAudioData(arrayBuffer)
-                .then(function(buffer){
-                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
-                audioImportTrack('Select File', duration);
-            });
-        };
-        reader.readAsArrayBuffer(file);
+        var type = 'Select File';
     }
 
     // Set the import mode to filesystem
@@ -540,7 +495,22 @@ function importFile(file, type)
     if(!newFile || !storeOutputIfExists(file)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
-    }  
+    } 
+
+    // Send event to dataLayer
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        const arrayBuffer = e.target.result;
+        audioContext.decodeAudioData(arrayBuffer)
+            .then(function(buffer){
+            const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
+            audioImportTrack(type, duration);
+        });
+    };
+    reader.readAsArrayBuffer(file);
+
 
     if(type == "Project"){
         // Show the imported file on Dropdown button
@@ -1204,6 +1174,7 @@ function changeForm(page){
         toggleMainRegLogModal();
     }
 
+    checkConsent();
     if (page == 'Login'){
         if (modalRegister.classList.contains('show')){
             modalRegister.classList.remove('show');
@@ -1430,6 +1401,33 @@ function setPrivacy() {
   else {
     localStorage.setItem("privacy", "false");
   }
+}
+
+function checkConsent(){
+    if (localStorage.getItem("privacy") === null) {
+        if (consentRequired()){
+            localStorage.setItem("privacy", "false");
+        }
+        else{
+            localStorage.setItem("privacy", "true");
+        }
+    }
+
+    // Initial value of privacy checkbox
+    var checkBox = document.getElementById("privacy-policy-checkbox");
+    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
+
+    if (localStorage.getItem("privacy") === "true"){
+        checkBox.checked = true;
+        checkBoxRegister.checked = true;
+        checkBoxLogin.checked = true;
+    }
+    else {
+        checkBox.checked = false;
+        checkBoxRegister.checked = false;
+        checkBoxLogin.checked = false;
+    }
 }
 
 function setColorMode() {
@@ -1695,6 +1693,9 @@ function updateUserInfo(userID, userEmail){
             }
             if (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null') {
                 localStorage.setItem("userEmail", null);
+            }
+            if (localStorage.getItem("privacy") !== null && localStorage.getItem("privacy") !== 'null') {
+                localStorage.setItem("privacy", null);
             }
         }
     }
