@@ -1142,7 +1142,7 @@ function closeLoadingModal(){
 function toggleSideMenu(){
     var modalMainRegLog = document.getElementById('register-login')
     var modal = document.getElementById('side-menu');
-
+    checkConsent();
     if (!modalMainRegLog.classList.contains('show') && !modal.classList.contains('show')){
         modal.classList.add('show');
     }
@@ -1174,8 +1174,8 @@ function changeForm(page){
         toggleMainRegLogModal();
     }
 
-    checkConsent();
     if (page == 'Login'){
+        checkConsent();
         if (modalRegister.classList.contains('show')){
             modalRegister.classList.remove('show');
         }
@@ -1202,6 +1202,7 @@ function changeForm(page){
     }
 
     if (page == 'Register'){
+        checkConsent();
         if (modalLogin.classList.contains('show')){
             modalLogin.classList.remove('show');
         }
@@ -1398,7 +1399,7 @@ function setPrivacy() {
   var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
 
-  if (checkBox.checked == true || checkBoxRegister.checked == true || checkBoxLogin.checked == true){
+  if ((checkBox.checked == true || checkBoxRegister.checked == true || checkBoxLogin.checked == true) && localStorage.getItem("privacy") === "false"){
     localStorage.setItem("privacy", "true");
   }
   else {
@@ -1407,29 +1408,30 @@ function setPrivacy() {
 }
 
 function checkConsent(){
-    if (localStorage.getItem("privacy") === null || localStorage.getItem("privacy") === 'null') {
-        if (consentRequired()){
-            localStorage.setItem("privacy", "false");
-        }
-        else{
-            localStorage.setItem("privacy", "true");
-        }
-    }
-
     // Initial value of privacy checkbox
     var checkBox = document.getElementById("privacy-policy-checkbox");
     var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
     var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
-    if (localStorage.getItem("privacy") === "true"){
-        checkBox.checked = true;
-        checkBoxRegister.checked = true;
-        checkBoxLogin.checked = true;
+    if (localStorage.getItem("privacy") === null || localStorage.getItem("privacy") === 'null') {
+        if (consentRequired()){
+            localStorage.setItem("privacy", "false");
+            checkBox.checked = false;
+            checkBoxRegister.checked = false;
+            checkBoxLogin.checked = false;    
+        }
+        else{
+            localStorage.setItem("privacy", "true");
+            checkBox.checked = true;
+            checkBoxRegister.checked = true;
+            checkBoxLogin.checked = true;
+        }
     }
     else {
-        checkBox.checked = false;
-        checkBoxRegister.checked = false;
-        checkBoxLogin.checked = false;
+        var privacyVal = (localStorage.getItem("privacy") === "true");
+        checkBox.checked = privacyVal;
+        checkBoxRegister.checked = privacyVal;
+        checkBoxLogin.checked = privacyVal;
     }
 }
 
