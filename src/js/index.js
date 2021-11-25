@@ -20,34 +20,11 @@
 // Check if user is already logged in
 document.addEventListener('DOMContentLoaded', function(e) {
     if (typeof(Storage) !== "undefined") {
-        if (localStorage.getItem("privacy") === null) {
-            if (consentRequired()){
-                localStorage.setItem("privacy", "false");
-            }
-            else{
-                localStorage.setItem("privacy", "true");
-            }
-        }
+        checkConsent();
 
         if (localStorage.getItem("colorMode") === null) {
             localStorage.setItem("colorMode", "Default");
         }
-    }
-
-    // Initial value of privacy checkbox
-    var checkBox = document.getElementById("privacy-policy-checkbox");
-    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
-    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
-
-    if (localStorage.getItem("privacy") === "true"){
-        checkBox.checked = true;
-        checkBoxRegister.checked = true;
-        checkBoxLogin.checked = true;
-    }
-    else {
-        checkBox.checked = false;
-        checkBoxRegister.checked = false;
-        checkBoxLogin.checked = false;
     }
 
     themeInit();
@@ -448,9 +425,6 @@ function selectFileFromDropdownHandler()
  */
 function systemImportHandler(ev) 
 {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const reader = new FileReader();
-
     // If the file came from the Drag and Drop event
     if (ev.type == "drop"){
 
@@ -496,31 +470,12 @@ function systemImportHandler(ev)
         }
         // Imported through system
         var file = ev.dataTransfer.files[0];
-        var type = 'Filesystem (Drag & Drop)';
-
-        reader.onload = function(e){
-            const arrayBuffer = e.target.result;
-            audioContext.decodeAudioData(arrayBuffer)
-                .then(function(buffer){
-                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
-                audioImportTrack('Drag & Drop', duration);
-            });
-        };
-        reader.readAsArrayBuffer(file);
+        var type = 'Drag & Drop';
     }
     else{
         // Regular system import
         var file = document.getElementById("file-input").files[0];
-        var type = 'Filesystem (Button)';
-        reader.onload = function(e){
-            const arrayBuffer = e.target.result;
-            audioContext.decodeAudioData(arrayBuffer)
-                .then(function(buffer){
-                const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
-                audioImportTrack('Select File', duration);
-            });
-        };
-        reader.readAsArrayBuffer(file);
+        var type = 'Select File';
     }
 
     // Set the import mode to filesystem
@@ -540,7 +495,22 @@ function importFile(file, type)
     if(!newFile || !storeOutputIfExists(file)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
-    }  
+    } 
+
+    // Send event to dataLayer
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const reader = new FileReader();
+
+    reader.onload = function(e){
+        const arrayBuffer = e.target.result;
+        audioContext.decodeAudioData(arrayBuffer)
+            .then(function(buffer){
+            const duration = new Date(buffer.duration * 1000).toISOString().substr(14, 5);
+            audioImportTrack(type, duration);
+        });
+    };
+    reader.readAsArrayBuffer(file);
+
 
     if(type == "Project"){
         // Show the imported file on Dropdown button
@@ -1172,7 +1142,7 @@ function closeLoadingModal(){
 function toggleSideMenu(){
     var modalMainRegLog = document.getElementById('register-login')
     var modal = document.getElementById('side-menu');
-
+    checkConsent();
     if (!modalMainRegLog.classList.contains('show') && !modal.classList.contains('show')){
         modal.classList.add('show');
     }
@@ -1205,6 +1175,7 @@ function changeForm(page){
     }
 
     if (page == 'Login'){
+        checkConsent();
         if (modalRegister.classList.contains('show')){
             modalRegister.classList.remove('show');
         }
@@ -1231,6 +1202,7 @@ function changeForm(page){
     }
 
     if (page == 'Register'){
+        checkConsent();
         if (modalLogin.classList.contains('show')){
             modalLogin.classList.remove('show');
         }
@@ -1423,13 +1395,44 @@ function accountIconShowHide(){
 
 function setPrivacy() {
   var checkBox = document.getElementById("privacy-policy-checkbox");
+  var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+  var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
 
-  if (checkBox.checked == true){
+
+  if ((checkBox.checked == true || checkBoxRegister.checked == true || checkBoxLogin.checked == true) && localStorage.getItem("privacy") === "false"){
     localStorage.setItem("privacy", "true");
   }
   else {
     localStorage.setItem("privacy", "false");
   }
+}
+
+function checkConsent(){
+    // Initial value of privacy checkbox
+    var checkBox = document.getElementById("privacy-policy-checkbox");
+    var checkBoxRegister = document.getElementById("privacy-policy-form-checkbox-register");
+    var checkBoxLogin = document.getElementById("privacy-policy-form-checkbox-login");
+
+    if (localStorage.getItem("privacy") === null || localStorage.getItem("privacy") === 'null') {
+        if (consentRequired()){
+            localStorage.setItem("privacy", "false");
+            checkBox.checked = false;
+            checkBoxRegister.checked = false;
+            checkBoxLogin.checked = false;    
+        }
+        else{
+            localStorage.setItem("privacy", "true");
+            checkBox.checked = true;
+            checkBoxRegister.checked = true;
+            checkBoxLogin.checked = true;
+        }
+    }
+    else {
+        var privacyVal = (localStorage.getItem("privacy") === "true");
+        checkBox.checked = privacyVal;
+        checkBoxRegister.checked = privacyVal;
+        checkBoxLogin.checked = privacyVal;
+    }
 }
 
 function setColorMode() {
@@ -1696,6 +1699,9 @@ function updateUserInfo(userID, userEmail){
             if (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null') {
                 localStorage.setItem("userEmail", null);
             }
+            if (localStorage.getItem("privacy") !== null && localStorage.getItem("privacy") !== 'null') {
+                localStorage.setItem("privacy", null);
+            }
         }
     }
 }
@@ -1726,7 +1732,7 @@ function acProductLineIntent(userEmail){
 
 // Register - Login - Reset Password
 function formActionTrack(type, userID, userEmail){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
     
     var action, formEvent, isloggedin;
@@ -1770,7 +1776,7 @@ function formActionTrack(type, userID, userEmail){
 
 // PageInfo
 function pageInfoTrack(){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1802,7 +1808,7 @@ function pageInfoTrack(){
 
 // User Notifications
 function userNotificationsTrack(responseCode){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1835,7 +1841,7 @@ function userNotificationsTrack(responseCode){
 
 // Audio Import
 function audioImportTrack(actionType, fileLength){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1868,7 +1874,7 @@ function audioImportTrack(actionType, fileLength){
 
 // Create Markers
 function createMarkersTrack(numberMarkers, fileLength){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
 
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
@@ -1901,7 +1907,7 @@ function createMarkersTrack(numberMarkers, fileLength){
 
 // Music Cellar Link
 function musicCellarLinkTrack(){
-    if (localStorage.privacy === "false")
+    if (localStorage.getItem("privacy") === "false")
         return;
         
     var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
