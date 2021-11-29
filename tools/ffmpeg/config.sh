@@ -55,9 +55,6 @@
         --enable-protocol=file\
         --enable-protocol=pipe \
         --enable-encoder="pcm_s16le" \
-        --enable-encoder="libmp3lame" \
         --enable-muxer="wav" \
-        --enable-muxer="mp3" \
         --enable-muxer="pcm_s16le" \
-        --enable-filter="aresample" \
-        --enable-libmp3lame
+        --enable-filter="aresample"
