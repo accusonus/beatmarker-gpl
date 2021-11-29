@@ -1,26 +1,63 @@
 ./configure \
         --prefix=ffmpeg_binaries \
         --arch=x86_64 \
-        --disable-all \
+        --disable-programs \
+        --disable-encoders \
+        --disable-hwaccels \
+        --disable-muxers \
+        --disable-bsfs \
+        --disable-protocols \
+        --disable-devices \
+        --disable-filters \
+        --disable-postproc \
+        --disable-swscale \
+        --disable-autodetect \
+        --disable-shared \
+        --disable-decoder="amv" \
+        --disable-decoder="av1" \
+        --disable-decoder="bmv_video" \
+        --disable-decoder="clearvideo" \
+        --disable-decoder="dsicinvideo" \
+        --disable-decoder="dvvideo" \
+        --disable-decoder="flv" \
+        --disable-decoder="gif" \
+        --disable-decoder="h261" \
+        --disable-decoder="h263" \
+        --disable-decoder="h263i" \
+        --disable-decoder="h263p" \
+        --disable-decoder="h264" \
+        --disable-decoder="hevc" \
+        --disable-decoder="jpeg2000" \
+        --disable-decoder="jpegls" \
+        --disable-decoder="mjpeg" \
+        --disable-decoder="mjpegb" \
+        --disable-decoder="mmvideo" \
+        --disable-decoder="motionpixels" \
+        --disable-decoder="mpeg1video" \
+        --disable-decoder="mpeg2video" \
+        --disable-decoder="mpegvideo" \
+        --disable-decoder="paf_video" \
+        --disable-decoder="rawvideo" \
+        --disable-decoder="truemotion1" \
+        --disable-decoder="truemotion2" \
+        --disable-decoder="truemotion2rt" \
+        --disable-decoder="utvideo" \
+        --disable-decoder="wmv1" \
+        --disable-decoder="wmv2" \
+        --disable-decoder="wmv3" \
+        --enable-gpl \
+        --enable-static \
         --enable-ffmpeg \
         --enable-avformat \
         --enable-avcodec \
         --enable-avfilter \
         --enable-swresample \
-        --enable-swscale \
         --enable-protocol=file\
         --enable-protocol=pipe \
-        --enable-gpl \
         --enable-encoder="pcm_s16le" \
         --enable-encoder="libmp3lame" \
-        --enable-demuxer="mp3" \
-        --enable-demuxer="wav" \
-        --enable-demuxer="pcm_s16le" \
-        --enable-decoder="mp3" \
-        --enable-decoder="pcm_s16le" \
         --enable-muxer="wav" \
         --enable-muxer="mp3" \
         --enable-muxer="pcm_s16le" \
         --enable-filter="aresample" \
-        --enable-libmp3lame \
-        --enable-parser=mpegaudio \
+        --enable-libmp3lame
