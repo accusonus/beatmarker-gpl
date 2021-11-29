@@ -87,7 +87,8 @@ window.audioFile = {
     "fileName" : null,
     "filePath" : null,
     "treePath" : null,
-    "originalName" : null
+    "originalName" : null,
+    "originalPath" : null
 
 }; // This object is global and accessible from every function.
 
@@ -225,7 +226,8 @@ function ffmpegToWAV(file){
         name : newFileName,
         path : newFilePath,
         treePath : file.treePath,
-        oldName : file.name
+        oldName : file.name,
+        oldFilePath : file.path
     }
 
     return newFile;
@@ -492,7 +494,7 @@ function importFile(file, type)
 {
     var newFile = ffmpegToWAV(file);
 
-    if(!newFile || !storeOutputIfExists(file)){      
+    if(!newFile || !storeOutputIfExists(newFile)){      
         raiseAlert("Error!", "Error while processing Input file!");
         return;
     } 
@@ -576,6 +578,7 @@ function storeOutputIfExists(file) {
     window.audioFile.filePath = file.path;
     window.audioFile.treePath = file.treePath;
     window.audioFile.originalName = file.oldName;
+    window.audioFile.originalPath = file.oldFilePath;
 
     // On successful import
     return true;
@@ -599,7 +602,7 @@ async function detectBeats(tempFile) {
     // Start child process
     exec(detectionCommand, {encoding: "UTF-8"}, function (err){
         // Load the data from the algorithm's output
-        var thisFilePath = window.audioFile.filePath.replace(/\\/g,"/");
+        var thisFilePath = window.audioFile.originalPath.replace(/\\/g,"/");
         // Big regex: Negative look forward until last slash, capture everything up to (excluding) the last dot 
         // Index 1 means the first capture group
         var fileName = thisFilePath.match(/(?!.*\/)(.+)\./)[1];
@@ -1023,16 +1026,16 @@ function createMarkers() {
     if(treepath){
         treepath = treepath.replace(/\\/g,"/");
     }
-    // Remove everything after the last occurance of . (filename may contain more instances of the '.' character)
+    // Remove everything after tPathhe last occurance of . (filename may contain more instances of the '.' character)
     // For some reason the seperator ( ) adds 1 empty element on index 0 of the array so we take index 1
-    var thisFileName = window.audioFile.fileName.split(/(.*)\./)[1];
+    var thisFileName = window.audioFile.originalName.split(/(.*)\./)[1];
 
     if (!thisFileName){
-        var fileName = window.audioFile.fileName
+        var fileName = window.audioFile.originalName
     } else {
         var fileName = thisFileName.replace(/\\/g,"/");
     }
-    var thisFilePath = window.audioFile.filePath.replace(/\\/g,"/");
+    var thisFilePath = window.audioFile.originalPath.replace(/\\/g,"/");
 
     evalScript("$._BDP_.createMarkers([" + window.selectedBeats.toString() + "]," +
                                                               window.importedThroughSystem + ",'" +
