@@ -358,7 +358,7 @@ function populateDropdown(data, preselected) {
             continue;
         }
      
-        if (!mimeLookup(items[i+1]).startsWith("audio")){
+        if (!mimeLookup(items[i+1]).startsWith("audio") || !mimeLookup(items[i+1]).startsWith("video")){
             continue;
         } 
 
