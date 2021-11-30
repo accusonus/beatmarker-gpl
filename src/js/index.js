@@ -511,7 +511,7 @@ function importFile(file, type)
             audioImportTrack(type, duration);
         });
     };
-    reader.readAsArrayBuffer(file);
+    reader.readAsArrayBuffer(blobFromPath(file.path));
 
 
     if(type == "Project"){
