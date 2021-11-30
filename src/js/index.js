@@ -1026,7 +1026,7 @@ function createMarkers() {
     if(treepath){
         treepath = treepath.replace(/\\/g,"/");
     }
-    // Remove everything after tPathhe last occurance of . (filename may contain more instances of the '.' character)
+    // Remove everything after the Path last occurance of . (filename may contain more instances of the '.' character)
     // For some reason the seperator ( ) adds 1 empty element on index 0 of the array so we take index 1
     var thisFileName = window.audioFile.originalName.split(/(.*)\./)[1];
 
