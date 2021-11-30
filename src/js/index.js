@@ -523,7 +523,7 @@ function importFile(file, type)
     else {
         // Show the imported file on the dragzone
         document.querySelector(".dropzone").classList.add("full");
-        document.querySelector(".dropzone p").innerHTML = window.audioFile.fileName;
+        document.querySelector(".dropzone p").innerHTML = window.audioFile.originalName;
 
         var selected = document.querySelector("#file-dropdown .selected");
 
