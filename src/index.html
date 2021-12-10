@@ -32,11 +32,35 @@
 		<script src="js/gaua.js"></script>
 		<script>
 			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-			ga('create', BeatMarkerGAUA, {'cookieDomain': 'none'});
-			ga('set', 'checkProtocolTask', null);
-			ga('set', 'checkStorageTask', null);
-			ga('require', 'displayfeatures');
-			ga('send', 'pageview', './index.html');
+			ga('create', 'UA-65598606-1', {name: 'accusonus'});
+			ga('accusonus.set', 'checkProtocolTask', null);
+			ga('accusonus.set', 'checkStorageTask', null);
+			ga('accusonus.require', 'displayfeatures');
+			if (localStorage.getItem('privacy') === 'true')
+				ga('accusonus.send', 'pageview', './index.html', {
+					'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? 1 : 0),
+					'dimension4': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? localStorage.getItem('userID') : undefined),
+					'dimension6': 'false',
+					'dimension9': 'BeatMarker'
+				});
+
+			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+			ga('create', BeatMarkerGAUA, {name: 'beatmarker'});
+			ga('beatmarker.set', 'checkProtocolTask', null);
+			ga('beatmarker.set', 'checkStorageTask', null);
+			ga('beatmarker.require', 'displayfeatures');
+			if (localStorage.getItem('privacy') === 'true')
+				ga('beatmarker.send', 'pageview', './index.html', {
+					'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? 1 : 0),
+					'dimension2': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? localStorage.getItem('userID') : undefined),
+					'dimension3': 'false',
+					'dimension4': 'BeatMarker'
+				});
+
 		</script>
 		<script async src="https://www.google-analytics.com/analytics.js"></script>
 		<!-- End Google Analytics -->

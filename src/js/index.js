@@ -1632,9 +1632,9 @@ function passwordresetUser(username){
         .then(result => {
             if (result.result == 24){
                 formActionTrack('Reset');
+                userNotificationsTrack(result.result);
                 showMessages('Login', 'Pass', result.success);
                 changeForm('Login');
-                userNotificationsTrack(result.result);
             }
             else {
                 userNotificationsTrack(result.result);
@@ -1701,9 +1701,6 @@ function updateUserInfo(userID, userEmail){
             if (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null') {
                 localStorage.setItem("userEmail", null);
             }
-            if (localStorage.getItem("privacy") !== null && localStorage.getItem("privacy") !== 'null') {
-                localStorage.setItem("privacy", null);
-            }
         }
     }
 }
@@ -1748,8 +1745,14 @@ function formActionTrack(type){
     else if (type === 'Reset'){
         action = 'Total Password Resets';
     }
-
-    ga('send', 'event', 'All User Events', action, 'BeatMarker Plugin');
+    ga('accusonus.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
+        'dimension1': (type !== 'Reset' ? 1 : 0),
+        'dimension4': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+    });
+    ga('beatmarker.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
+        'dimension1': (type !== 'Reset' ? 1 : 0),
+        'dimension2': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+    });
 }
 
 // User Notifications
@@ -1757,7 +1760,8 @@ function userNotificationsTrack(responseCode){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    ga('send', 'event', 'User Notifications', 'BeatMarker Plugin', `${responseCode}`);
+    ga('accusonus.send', 'event', 'User Notifications', 'BeatMarker Plugin', `${responseCode}`);
+    ga('beatmarker.send', 'event', 'User Notifications', 'BeatMarker Plugin', `${responseCode}`);
 }
 
 // Audio Import
@@ -1765,7 +1769,7 @@ function audioImportTrack(actionType, fileLength){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    ga('send', 'event', 'Audio Import', actionType, fileLength);
+    ga('beatmarker.send', 'event', 'Audio Import', actionType, fileLength);
 }
 
 // Create Markers
@@ -1773,7 +1777,7 @@ function createMarkersTrack(fileLength){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    ga('send', 'event', 'Create Markers', 'Create Markers', `${fileLength}`);
+    ga('beatmarker.send', 'event', 'Create Markers', 'Create Markers', `${fileLength}`);
 }
 
 // Music Cellar Link
@@ -1781,7 +1785,7 @@ function musicCellarLinkTrack(){
     if (localStorage.getItem("privacy") === "false")
         return;
         
-    ga('send', 'event', 'Music Cellar Link', 'Click', 'BeatMarker Plugin');
+    ga('beatmarker.send', 'event', 'Music Cellar Link', 'Click', 'BeatMarker Plugin');
 }
 
 function consentRequired() {
