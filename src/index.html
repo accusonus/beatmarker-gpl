@@ -27,7 +27,20 @@
 		<meta charset="utf-8">
 		<title>BeatMarker</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<!-- Google Analytics -->
 		<script src="js/gaua.js"></script>
+		<script>
+			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+			ga('create', BeatMarkerGAUA, {'cookieDomain': 'none'});
+			ga('set', 'checkProtocolTask', null);
+			ga('set', 'checkStorageTask', null);
+			ga('require', 'displayfeatures');
+			ga('send', 'pageview', './index.html');
+		</script>
+		<script async src="https://www.google-analytics.com/analytics.js"></script>
+		<!-- End Google Analytics -->
+
 		<script src="js/version.js"></script>
 		<script src="js/dayjs/dayjs.min.js"></script>
 		<script src="js/dayjs/utc.js"></script>
@@ -38,28 +51,8 @@
 		<script src="./lib/wavesurfer.min.js"></script>
 		<script src="./lib/wavesurfer.markers.min.js"></script>
 		<script src="./lib/wavesurfer.regions.min.js"></script>
-		<!-- Google Tag Manager -->
-		<script>
-			pageInfoTrack();
-			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-			var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-			j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;
-			f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer', BeatMarkerGAUA);
-		</script>
-		<!-- End Google Tag Manager -->
 	</head>
 	<body onload="onLoad()">
-	<!-- Google Tag Manager (noscript) -->
-	<script>
-		var gpath = 'https://www.googletagmanager.com/ns.html?id=' + BeatMarkerGAUA;
-		var gframe = document.createElement('iframe');
-		gframe.src =  gpath;
-		gframe.height = 0;
-		gframe.width = 0;
-		gframe.style = 'display:none;visibility:hidden';
-		document.body.prepend(gframe);
-	</script>
-	<!-- End Google Tag Manager (noscript) -->
     <div id="master-panel" ondrop="systemImportHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeave(event);">
 		<img id="logo" src="img/accusonus.svg" onclick="openAboutBox()" draggable="false">
 		<div id="extension-panel">
