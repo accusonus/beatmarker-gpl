@@ -1012,7 +1012,8 @@ function evalScript(script, callback) {
  * sequence with markers based on the selected beat detection modes.
  */
 function createMarkers() {
-    createMarkersTrack(sessionStorage.getItem('initialMarkers'));
+    var markerAmount = parseInt(document.querySelector("#marker-number").value);
+    createMarkersTrack(markerAmount, sessionStorage.getItem('initialMarkers'));
 
     var treepath = window.audioFile.treePath;
     // Pause playback
@@ -1158,6 +1159,24 @@ function toggleMainRegLogModal(){
     var modalMainRegLog = document.getElementById('register-login');
     if (modalMainRegLog.classList.contains('show')){
         modalMainRegLog.classList.remove('show');
+        if (localStorage.getItem('privacy') === 'true'){
+            ga('accusonus.send', 'pageview', './index.html', {
+                'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+                ? 1 : 0),
+                'dimension4': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+                ? localStorage.getItem('userID') : undefined),
+                'dimension6': 'false',
+                'dimension9': 'BeatMarker'
+            });
+            ga('beatmarker.send', 'pageview', './index.html', {
+                'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+                ? 1 : 0),
+                'dimension2': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+                ? localStorage.getItem('userID') : undefined),
+                'dimension3': 'false',
+                'dimension4': 'BeatMarker'
+            });
+        }
     }
     else {
         modalMainRegLog.classList.add('show');
@@ -1567,9 +1586,9 @@ function signupUser(username, password){
             if (result.result == 30){
                 closeLoadingModal();
                 acProductLineIntent(username);
-                formActionTrack('Register');
                 showMessages('Register', 'Pass', result.success);
                 updateUserInfo(result.uid, result.mail);
+                formActionTrack('Register');
                 userNotificationsTrack(result.result);
                 changeForm('Thankyou');
                 setTimeout(() => {
@@ -1600,9 +1619,9 @@ function loginUser(username, password){
         .then(response => response.json())
         .then(result => {
             if (result.result == 21){
-                formActionTrack('Login');
                 showMessages('Login', 'Pass', result.success);
                 updateUserInfo(result.uid, result.mail);
+                formActionTrack('Login');
                 userNotificationsTrack(result.result);
                 changeForm('Thankyou');
                 setTimeout(() => {
@@ -1745,13 +1764,20 @@ function formActionTrack(type){
     else if (type === 'Reset'){
         action = 'Total Password Resets';
     }
+
     ga('accusonus.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
         'dimension1': (type !== 'Reset' ? 1 : 0),
-        'dimension4': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+        'dimension4': (type !== 'Reset' &&
+        ((localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null')) 
+            ? localStorage.getItem('userID') 
+            : undefined),
     });
     ga('beatmarker.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
         'dimension1': (type !== 'Reset' ? 1 : 0),
-        'dimension2': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+        'dimension2': (type !== 'Reset'  &&
+        ((localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'))
+            ? localStorage.getItem('userID') 
+            : undefined),
     });
 }
 
@@ -1773,11 +1799,11 @@ function audioImportTrack(actionType, fileLength){
 }
 
 // Create Markers
-function createMarkersTrack(fileLength){
+function createMarkersTrack(numberMarkers, fileLength){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    ga('beatmarker.send', 'event', 'Create Markers', 'Create Markers', `${fileLength}`);
+    ga('beatmarker.send', 'event', 'Create Markers', `${numberMarkers}`, `${fileLength}`);
 }
 
 // Music Cellar Link
