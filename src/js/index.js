@@ -1012,8 +1012,7 @@ function evalScript(script, callback) {
  * sequence with markers based on the selected beat detection modes.
  */
 function createMarkers() {
-    var markerAmount = parseInt(document.querySelector("#marker-number").value);
-    createMarkersTrack(markerAmount, sessionStorage.getItem('initialMarkers'));
+    createMarkersTrack(sessionStorage.getItem('initialMarkers'));
 
     var treepath = window.audioFile.treePath;
     // Pause playback
@@ -1568,7 +1567,7 @@ function signupUser(username, password){
             if (result.result == 30){
                 closeLoadingModal();
                 acProductLineIntent(username);
-                formActionTrack('Register', result.uid, username)
+                formActionTrack('Register');
                 showMessages('Register', 'Pass', result.success);
                 updateUserInfo(result.uid, result.mail);
                 userNotificationsTrack(result.result);
@@ -1601,7 +1600,7 @@ function loginUser(username, password){
         .then(response => response.json())
         .then(result => {
             if (result.result == 21){
-                formActionTrack('Login', result.uid, username)
+                formActionTrack('Login');
                 showMessages('Login', 'Pass', result.success);
                 updateUserInfo(result.uid, result.mail);
                 userNotificationsTrack(result.result);
@@ -1632,10 +1631,10 @@ function passwordresetUser(username){
         .then(response => response.json())
         .then(result => {
             if (result.result == 24){
-                formActionTrack('Reset', undefined, username)
+                formActionTrack('Reset');
+                userNotificationsTrack(result.result);
                 showMessages('Login', 'Pass', result.success);
                 changeForm('Login');
-                userNotificationsTrack(result.result);
             }
             else {
                 userNotificationsTrack(result.result);
@@ -1702,9 +1701,6 @@ function updateUserInfo(userID, userEmail){
             if (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null') {
                 localStorage.setItem("userEmail", null);
             }
-            if (localStorage.getItem("privacy") !== null && localStorage.getItem("privacy") !== 'null') {
-                localStorage.setItem("privacy", null);
-            }
         }
     }
 }
@@ -1734,79 +1730,29 @@ function acProductLineIntent(userEmail){
  */
 
 // Register - Login - Reset Password
-function formActionTrack(type, userID, userEmail){
+function formActionTrack(type){
     if (localStorage.getItem("privacy") === "false")
         return;
     
-    var action, formEvent, isloggedin;
-    var userid = (userID === undefined)
-        ? undefined
-        : `${userID}`;
+    var action;
 
     if (type === 'Register'){
-        formEvent = 'Account Registration';
         action = 'Total Registrations';
-        isloggedin = 1;
     }
     else if (type === 'Login') {
-        formEvent = 'Account Login';
         action = 'Total Logins';
-        isloggedin = 1;
     }
     else if (type === 'Reset'){
-        formEvent = 'Account Reset Password';
         action = 'Total Password Resets';
-        isloggedin = 0;
     }
-
-    var formEventObject = { 
-        event: formEvent,
-        ga: {
-            category: 'All User Events',
-            action: action,
-            label: 'BeatMarker Plugin',
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(formEventObject);
-}
-
-// PageInfo
-function pageInfoTrack(){
-    if (localStorage.getItem("privacy") === "false")
-        return;
-
-    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
-        ? localStorage.userID
-        : undefined;
-    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
-        ? localStorage.userEmail
-        : undefined;
-    var isloggedin = (userid && userEmail)
-        ? 1
-        : 0;
-
-    var pageInfoObject = { 
-        event: 'Page Info',
-        pageInfo: {
-            isPluginView: 'false',
-            sysEnv: 'BeatMarker'
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-    
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(pageInfoObject);
+    ga('accusonus.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
+        'dimension1': (type !== 'Reset' ? 1 : 0),
+        'dimension4': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+    });
+    ga('beatmarker.send', 'event', 'All User Events', action, 'BeatMarker Plugin', {
+        'dimension1': (type !== 'Reset' ? 1 : 0),
+        'dimension2': (type !== 'Reset' ? localStorage.getItem('userID') : undefined),
+    });
 }
 
 // User Notifications
@@ -1814,32 +1760,8 @@ function userNotificationsTrack(responseCode){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
-        ? localStorage.userID
-        : undefined;
-    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
-        ? localStorage.userEmail
-        : undefined;
-    var isloggedin = (userid && userEmail)
-        ? 1
-        : 0;
-
-    var userNotificationsObject = { 
-        event: 'User Notifications',
-        ga: {
-            category: 'User Notifications',
-            action: 'BeatMarker Plugin',
-            label: `${responseCode}`,
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(userNotificationsObject);
+    ga('accusonus.send', 'event', 'User Notifications', 'BeatMarker Plugin', `${responseCode}`);
+    ga('beatmarker.send', 'event', 'User Notifications', 'BeatMarker Plugin', `${responseCode}`);
 }
 
 // Audio Import
@@ -1847,65 +1769,15 @@ function audioImportTrack(actionType, fileLength){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
-        ? localStorage.userID
-        : undefined;
-    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
-        ? localStorage.userEmail
-        : undefined;
-    var isloggedin = (userid && userEmail)
-        ? 1
-        : 0;
-
-    var audioImportObject = { 
-        event: 'Audio Import',
-        ga: {
-            category: 'Audio Import',
-            action: actionType,
-            label: fileLength,
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(audioImportObject);
+    ga('beatmarker.send', 'event', 'Audio Import', actionType, fileLength);
 }
 
 // Create Markers
-function createMarkersTrack(numberMarkers, fileLength){
+function createMarkersTrack(fileLength){
     if (localStorage.getItem("privacy") === "false")
         return;
 
-    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
-        ? localStorage.userID
-        : undefined;
-    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
-        ? localStorage.userEmail
-        : undefined;
-    var isloggedin = (userid && userEmail)
-        ? 1
-        : 0;
-
-    var createMarkersObject = { 
-        event: 'Create Markers',
-        ga: {
-            category: 'Create Markers',
-            action: `${numberMarkers}`,
-            label: `${fileLength}`,
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(createMarkersObject);
+    ga('beatmarker.send', 'event', 'Create Markers', 'Create Markers', `${fileLength}`);
 }
 
 // Music Cellar Link
@@ -1913,32 +1785,7 @@ function musicCellarLinkTrack(){
     if (localStorage.getItem("privacy") === "false")
         return;
         
-    var userid = (localStorage.getItem("userID") !== null && localStorage.getItem("userID") !== 'null')
-        ? localStorage.userID
-        : undefined;
-    var userEmail = (localStorage.getItem("userEmail") !== null && localStorage.getItem("userEmail") !== 'null')
-        ? localStorage.userEmail
-        : undefined;
-    var isloggedin = (userid && userEmail)
-        ? 1
-        : 0;
-
-    var musicCellarLinkObject = { 
-        event: 'Music Cellar Link',
-        ga: {
-            category: 'Click',
-            action: 'Inbound Click',
-            label: 'BeatMarker Plugin',
-        },
-        user: {
-            user_id: userid,
-            loggedin: isloggedin,
-            email: userEmail
-        } 
-    };
-
-    window.dataLayer = window.dataLayer || [];
-    window.dataLayer.push(musicCellarLinkObject);
+    ga('beatmarker.send', 'event', 'Music Cellar Link', 'Click', 'BeatMarker Plugin');
 }
 
 function consentRequired() {

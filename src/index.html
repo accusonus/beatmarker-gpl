@@ -27,7 +27,44 @@
 		<meta charset="utf-8">
 		<title>BeatMarker</title>
 		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+		<!-- Google Analytics -->
 		<script src="js/gaua.js"></script>
+		<script>
+			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+			ga('create', 'UA-65598606-1', {name: 'accusonus'});
+			ga('accusonus.set', 'checkProtocolTask', null);
+			ga('accusonus.set', 'checkStorageTask', null);
+			ga('accusonus.require', 'displayfeatures');
+			if (localStorage.getItem('privacy') === 'true')
+				ga('accusonus.send', 'pageview', './index.html', {
+					'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? 1 : 0),
+					'dimension4': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? localStorage.getItem('userID') : undefined),
+					'dimension6': 'false',
+					'dimension9': 'BeatMarker'
+				});
+
+			window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+			ga('create', BeatMarkerGAUA, {name: 'beatmarker'});
+			ga('beatmarker.set', 'checkProtocolTask', null);
+			ga('beatmarker.set', 'checkStorageTask', null);
+			ga('beatmarker.require', 'displayfeatures');
+			if (localStorage.getItem('privacy') === 'true')
+				ga('beatmarker.send', 'pageview', './index.html', {
+					'dimension1': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? 1 : 0),
+					'dimension2': (localStorage.getItem('userID') !== null && localStorage.getItem('userID') !== 'null'
+					? localStorage.getItem('userID') : undefined),
+					'dimension3': 'false',
+					'dimension4': 'BeatMarker'
+				});
+
+		</script>
+		<script async src="https://www.google-analytics.com/analytics.js"></script>
+		<!-- End Google Analytics -->
+
 		<script src="js/version.js"></script>
 		<script src="js/dayjs/dayjs.min.js"></script>
 		<script src="js/dayjs/utc.js"></script>
@@ -38,28 +75,8 @@
 		<script src="./lib/wavesurfer.min.js"></script>
 		<script src="./lib/wavesurfer.markers.min.js"></script>
 		<script src="./lib/wavesurfer.regions.min.js"></script>
-		<!-- Google Tag Manager -->
-		<script>
-			pageInfoTrack();
-			(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});
-			var f=d.getElementsByTagName(s)[0], j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';
-			j.async=true;j.src= 'https://www.googletagmanager.com/gtm.js?id='+i+dl;
-			f.parentNode.insertBefore(j,f); })(window,document,'script','dataLayer', BeatMarkerGAUA);
-		</script>
-		<!-- End Google Tag Manager -->
 	</head>
 	<body onload="onLoad()">
-	<!-- Google Tag Manager (noscript) -->
-	<script>
-		var gpath = 'https://www.googletagmanager.com/ns.html?id=' + BeatMarkerGAUA;
-		var gframe = document.createElement('iframe');
-		gframe.src =  gpath;
-		gframe.height = 0;
-		gframe.width = 0;
-		gframe.style = 'display:none;visibility:hidden';
-		document.body.prepend(gframe);
-	</script>
-	<!-- End Google Tag Manager (noscript) -->
     <div id="master-panel" ondrop="systemImportHandler(event);" ondragover="dragOverHandler(event);" ondragleave="dragLeave(event);">
 		<img id="logo" src="img/accusonus.svg" onclick="openAboutBox()" draggable="false">
 		<div id="extension-panel">
